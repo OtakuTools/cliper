@@ -12,7 +12,12 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
+  "externals": {
+    "axios": "axios",
+    "COS": "COS"
+  },
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "centrifuge": "^2.7.7",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
