@@ -93,40 +93,40 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      document.addEventListener(
-        "paste",
-        (event) => {
-          console.group("paste");
-          console.log("event", event);
-          console.log("clipboardData", event.clipboardData);
-          console.log("items", event.clipboardData?.items);
-          console.log("types", event.clipboardData?.types);
-          console.log("fileList", event.clipboardData?.files);
-          console.log("getData", event.clipboardData?.getData("Files"));
+      // document.addEventListener(
+      //   "paste",
+      //   (event) => {
+      //     console.group("paste");
+      //     console.log("event", event);
+      //     console.log("clipboardData", event.clipboardData);
+      //     console.log("items", event.clipboardData?.items);
+      //     console.log("types", event.clipboardData?.types);
+      //     console.log("fileList", event.clipboardData?.files);
+      //     console.log("getData", event.clipboardData?.getData("Files"));
 
-          let kinds: string[] = [];
-          for (let item of event.clipboardData?.items || []) {
-            kinds.push(item.kind);
-          }
-          console.log("kinds", kinds);
+      //     let kinds: string[] = [];
+      //     for (let item of event.clipboardData?.items || []) {
+      //       kinds.push(item.kind);
+      //     }
+      //     console.log("kinds", kinds);
 
-          console.groupEnd();
+      //     console.groupEnd();
 
-          for (let entity of event.clipboardData?.items || []) {
-            if (entity.kind === "string") {
-              entity.getAsString((message) => {
-                clipboardListAddItem(message, { text: message });
-              });
-            } else if (entity.kind === "file") {
-              let file = entity.getAsFile();
-              if (file) {
-                putObject(file);
-              }
-            }
-          }
-        },
-        { capture: false }
-      );
+      //     for (let entity of event.clipboardData?.items || []) {
+      //       if (entity.kind === "string") {
+      //         entity.getAsString((message) => {
+      //           clipboardListAddItem(message, { text: message });
+      //         });
+      //       } else if (entity.kind === "file") {
+      //         let file = entity.getAsFile();
+      //         if (file) {
+      //           putObject(file);
+      //         }
+      //       }
+      //     }
+      //   },
+      //   { capture: false }
+      // );
     });
 
     ipcRenderer.on("pageData", function (event, message) {
