@@ -32,7 +32,7 @@
 import { defineComponent, reactive, toRefs, onMounted } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { Config, CosInstance } from "../config";
-import Centrifuge from "centrifuge";
+import Socket from '../socket';
 
 export default defineComponent({
   name: "UploadComponent",
@@ -42,7 +42,7 @@ export default defineComponent({
   setup() {
     const data = reactive({
       fileList: [] as any[],
-      clipContentList: [] as string[],
+      ws: new Socket('1234', (msg: any) => { console.log(msg)}),
     });
 
     function addToFileList(newData: any) {
@@ -115,6 +115,7 @@ export default defineComponent({
 
     sendMessage(message: unknown): Promise<unknown> {
       console.log(message)
+      this.ws.socketSend(message);
       return Promise.resolve(null)
     },
 
@@ -143,7 +144,9 @@ export default defineComponent({
           resolve({
             name: fileObj,
             type: 'text',
-            text: fileObj
+            data: fileObj,
+            size: fileObj.length,
+            timestamp: Date.now()
           })
         })
       }
@@ -158,11 +161,13 @@ export default defineComponent({
           },
           (err: unknown, data: any) => {
             if (!err) {
-              let resUrl = data.Location;
+              let resUrl = 'https://' + data.Location;
               resolve({
                 name: fileObj.name,
                 type: 'url',
-                url: resUrl
+                data: resUrl,
+                size: fileObj.size,
+                timestamp: Date.now()
               })
             }
           }

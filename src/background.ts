@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, globalShortcut, clipboard, Tray, Menu } from "electron";
+import { app, protocol, BrowserWindow, globalShortcut, clipboard, Tray, Menu, ipcMain, dialog } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
@@ -56,6 +56,36 @@ async function createWindow() {
     globalShortcut.register('Alt+v',function(){
       win.webContents.send('pageData', {'text': clipboard.readText()});
     })
+
+    // 监听渲染进程发出的download事件
+    ipcMain.on('download', async (evt, args) => {
+    // 打开系统弹窗 选择文件下载位置
+      dialog.showOpenDialog(win, {
+        properties: ['openFile', 'openDirectory']
+      }).then((files: any) => {
+        let saveUrl = files[0];  // 保存文件路径
+        if (!saveUrl) return; // 如果用户没有选择路径,则不再向下进行
+        let url = JSON.parse(args); 
+        let downloadUrl = url.downloadUrl; // 获取渲染进程传递过来的 下载链接
+
+        win.webContents.session.on('will-download', (e, item) => {
+          const filePath = path.join(saveUrl, item.getFilename());
+          item.setSavePath(filePath); // 'C:\Users\kim\Downloads\第12次.zip'
+          //监听下载过程，计算并设置进度条进度
+          item.on('updated', (evt, state) => {
+            
+          });
+          //监听下载结束事件
+          item.on('done', (e, state) => {
+            
+          });
+        });
+
+        win.webContents.downloadURL(downloadUrl); // 触发 will-download 事件
+      })
+    });
+
+    
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

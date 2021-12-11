@@ -1,18 +1,18 @@
 <template>
   <div class="home">
     <upload-component />
-    <ClipContentList />
+    <recv-component />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ClipContentList from "@/components/ClipContentList.vue";
+import RecvComponent from "@/components/RecvComponent.vue";
 import UploadComponent from "@/components/UploadComponent.vue";
 export default defineComponent({
   name: "MainPage",
   components: {
-    ClipContentList,
+    RecvComponent,
     UploadComponent,
   },
 });
