@@ -2,7 +2,7 @@
   <div>
     <el-button @click="addChannel('1234')">添加频道</el-button>
     <el-tabs>
-      <el-tab-pane v-for="channel in channelIdList" v-bind:key="channel">
+      <el-tab-pane :label="channel" v-for="channel in channelIdList" v-bind:key="channel">
         <recv-list-component :channelInfo="channel" :recvFileList="recvDataList.get(channel)" />
       </el-tab-pane>
     </el-tabs>
