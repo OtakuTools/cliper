@@ -67,6 +67,11 @@ export default defineComponent({
       ws: new Socket('1234', (msg: any) => { console.log(msg)}),
     });
 
+
+    /** 
+     * @function 添加到待发送列表
+     * @param {any} newData
+     */
     function addToFileList(newData: any) {
       const isUnique = data.fileList.findIndex((item: any) => item.name === newData.name) === -1;
       if (isUnique) {
@@ -75,18 +80,11 @@ export default defineComponent({
     }
 
     onMounted(() => {
+
+      // 监听粘贴操作并将粘贴项添加到待发送列表
       document.addEventListener(
         "paste",
         (event) => {
-          // console.group("paste");
-          // console.log("event", event);
-          // console.log("clipboardData", event.clipboardData);
-          // console.log("items", event.clipboardData?.items);
-          // console.log("types", event.clipboardData?.types);
-          // console.log("fileList", event.clipboardData?.files);
-          // console.log("getData", event.clipboardData?.getData("Files"));
-          // console.groupEnd();
-
           for (let entity of event.clipboardData?.items || []) {
             if (entity.kind === "string") {
               entity.getAsString((message) => {
@@ -117,50 +115,7 @@ export default defineComponent({
       );
     });
 
-    return {
-      ...toRefs(data),
-    };
-  },
-
-
-
-  methods: {
-    submitUpload() {
-      const promiseQue: any = [];
-      this.fileList.forEach((file: any) => {
-        promiseQue.push(this.putObject(file.raw))
-      })
-      Promise.all(promiseQue).then(res => {
-        this.sendMessage(res);
-      })
-    },
-
-    sendMessage(message: unknown): Promise<unknown> {
-      console.log(message)
-      this.ws.socketSend(message);
-      return Promise.resolve(null)
-    },
-
-    addToFileList(data: any) {
-      const isUnique = this.fileList.findIndex((item: any) => item.name === data.name) === -1;
-      if (isUnique) {
-        this.fileList.push(data);
-      }
-    },
-
-    removeFromFileList(data: any) {
-      this.fileList = this.fileList.filter((item: any) => item.name !== data.name)
-    },
-
-    uploadFileChange(file: any, fileList: any) {
-      this.addToFileList(file);
-    },
-
-    removeFileChange(file: any, fileList: any) {
-      this.removeFromFileList(file);
-    },
-
-    putObject(fileObj: File | string) {
+    function putObject(fileObj: File | string) {
       if (typeof fileObj === 'string') {
         return new Promise((resolve) => {
           resolve({
@@ -196,6 +151,40 @@ export default defineComponent({
         );
       })
     }
+
+    /** @function 通过ws同步消息 */
+    function sendMessage(message: unknown): Promise<unknown> {
+      console.log(message);
+      data.ws.socketSend(message);
+      return Promise.resolve(null);
+    }
+
+    /** 点击发送按钮 */
+    function submitUpload() {
+      const promiseQue = data.fileList.map(file => putObject(file.raw))
+      Promise.all(promiseQue).then(res => {
+        sendMessage(res);
+      })
+    }
+
+    // 移除项
+    function removeFromFileList(target: any) {
+      data.fileList = data.fileList.filter((item: any) => item.name !== target.name)
+    }
+    function removeFileChange(file: any, fileList: any) {
+      removeFromFileList(file);
+    }
+
+    function uploadFileChange(file: any, fileList: any) {
+      addToFileList(file);
+    }
+
+    return {
+      ...toRefs(data),
+      submitUpload,
+      removeFileChange,
+      uploadFileChange,
+    };
   }
 });
 </script>
