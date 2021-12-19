@@ -34,4 +34,8 @@ export default class Socket {
       this.socketSend([]);
     }, 10000);
   }
+
+  close() {
+    this.socket.close()
+  }
 }

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-button @click="addChannel('1234')">添加频道</el-button>
-    <el-tabs>
-      <el-tab-pane :label="channel" v-for="channel in channelIdList" v-bind:key="channel">
+    <!-- <el-button @click="addChannel('1234')">添加频道</el-button> -->
+    <el-tabs editable @edit="handleChannelEdit" v-model="currentChannel">
+      <el-tab-pane :label="channel" v-for="channel in channelIdList" v-bind:key="channel" :name="channel">
         <recv-list-component :channelInfo="channel" :recvFileList="recvDataList.get(channel)" />
       </el-tab-pane>
     </el-tabs>
@@ -12,6 +12,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
+import { ElMessageBox, ElMessage } from 'element-plus'
 import Socket from "../socket";
 
 export default defineComponent({
@@ -27,7 +28,8 @@ export default defineComponent({
     const data = reactive({
       channelIdList: [] as string[],
       channelWsList: new Map(),
-      recvDataList: new Map()
+      recvDataList: new Map(),
+      currentChannel: ''
     });
 
     return {
@@ -47,6 +49,7 @@ export default defineComponent({
       })
       this.channelWsList.set(channelId, ws);
       this.channelIdList.push(channelId);
+      this.currentChannel = channelId;
     },
 
     removeChannel(channelId: string) {
@@ -54,9 +57,40 @@ export default defineComponent({
         return;
       }
       this.recvDataList.delete(channelId)
+      const ws = this.channelWsList.get(channelId);
+      ws.close();
       this.channelWsList.delete(channelId);
+      if (channelId === this.currentChannel) {
+        const index = this.channelIdList.findIndex(id => id === channelId);
+        this.currentChannel = this.channelIdList[index - 1] || this.channelIdList[index + 1] || '';
+      }
       this.channelIdList = this.channelIdList.filter(id => id !== channelId);
-    }
+    },
+
+    handleChannelEdit(targetName: string, action: string) {
+      console.log('action',action,targetName)
+      if (action === 'add') {
+        ElMessageBox.prompt('请输入频道号', '提示', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          inputPattern:
+            /\d+/,
+          inputErrorMessage: '非法频道号',
+        })
+        .then(({ value }) => {
+          this.addChannel(value)
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '添加频道失败',
+          })
+        })
+      }
+      if (action === 'remove') {
+        this.removeChannel(targetName)
+      }
+    },
   }
 })
 </script>
