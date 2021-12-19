@@ -1,32 +1,54 @@
 <template>
-  <el-upload
-    ref="uploader"
-    drag
-    action="https://jsonplaceholder.typicode.com/posts/"
-    multiple
-    :auto-upload="false"
-    :file-list="fileList"
-    :on-change="uploadFileChange"
-    :on-remove="removeFileChange"
-  >
-    <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-    <div class="el-upload__text">
-      Drop file here or <em>click to upload</em>
-    </div>
-    <template #tip>
-      <div class="el-upload__tip">
-        jpg/png files with a size less than 500kb
-      </div>
-    </template>
-    <el-button
-      style="margin-left: 10px"
-      size="small"
-      type="success"
-      @click="submitUpload"
-      >upload to server</el-button
+  <div>
+    <el-upload
+      ref="uploader"
+      drag
+      action="https://jsonplaceholder.typicode.com/posts/"
+      multiple
+      :auto-upload="false"
+      :file-list="fileList"
+      :on-change="uploadFileChange"
+      :on-remove="removeFileChange"
+      style="width: 360px;"
     >
-  </el-upload>
+      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+      <div class="el-upload__text">
+        Drop file here or <em>click to upload</em>
+      </div>
+      <template #tip>
+        <div class="el-upload__tip">
+          <span class="el-upload__msg">
+            jpg/png files with a size less than 500kb
+          </span>
+          <el-button
+            class="el-upload__btn"
+            size="small"
+            type="success"
+            @click="submitUpload"
+            >Send</el-button
+          >
+        </div>
+      </template>
+    </el-upload>
+  </div>
 </template>
+
+<style scoped>
+.el-upload__tip {
+  display: flex;
+}
+
+.el-upload__msg {
+  flex: 1;
+  line-height: 32px;
+  height: 32px;
+}
+
+.el-upload__btn {
+  width: 60px;
+  margin-left: 10px;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, onMounted } from "vue";

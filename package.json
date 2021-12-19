@@ -18,6 +18,7 @@
     "element-plus": "element-plus"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^0.2.4",
     "@types/axios": "^0.14.0",
     "centrifuge": "^2.7.7",
     "core-js": "^3.6.5",
