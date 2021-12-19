@@ -54,7 +54,7 @@
 import { defineComponent, reactive, toRefs, onMounted } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { Config, CosInstance } from "../config";
-import Socket from '../socket';
+import Socket, { SocketMessage } from '../socket';
 
 export default defineComponent({
   name: "UploadComponent",
@@ -115,7 +115,7 @@ export default defineComponent({
       );
     });
 
-    function putObject(fileObj: File | string) {
+    function putObject(fileObj: File | string): Promise<SocketMessage> {
       if (typeof fileObj === 'string') {
         return new Promise((resolve) => {
           resolve({
@@ -153,7 +153,7 @@ export default defineComponent({
     }
 
     /** @function 通过ws同步消息 */
-    function sendMessage(message: unknown): Promise<unknown> {
+    function sendMessage(message: SocketMessage[]): Promise<unknown> {
       console.log(message);
       data.ws.socketSend(message);
       return Promise.resolve(null);

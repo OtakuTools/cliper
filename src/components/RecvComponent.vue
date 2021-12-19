@@ -13,7 +13,7 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import { ElMessageBox, ElMessage } from 'element-plus'
-import Socket from "../socket";
+import Socket, { SocketMessage } from "../socket";
 
 export default defineComponent({
   name: "RecvComponent",
@@ -27,8 +27,8 @@ export default defineComponent({
   setup() {
     const data = reactive({
       channelIdList: [] as string[],
-      channelWsList: new Map(),
-      recvDataList: new Map(),
+      channelWsList: new Map<string, Socket>(),
+      recvDataList: new Map<string, SocketMessage[]>(),
       currentChannel: ''
     });
 
@@ -43,8 +43,8 @@ export default defineComponent({
         return;
       }
       this.recvDataList.set(channelId, [])
-      const ws = new Socket(channelId, (msg: any) => {
-        const data = this.recvDataList.get(channelId);
+      const ws = new Socket(channelId, (msg: SocketMessage[]) => {
+        const data = this.recvDataList.get(channelId) || [];
         data.push(...msg);
       })
       this.channelWsList.set(channelId, ws);
@@ -58,7 +58,7 @@ export default defineComponent({
       }
       this.recvDataList.delete(channelId)
       const ws = this.channelWsList.get(channelId);
-      ws.close();
+      ws?.close();
       this.channelWsList.delete(channelId);
       if (channelId === this.currentChannel) {
         const index = this.channelIdList.findIndex(id => id === channelId);
