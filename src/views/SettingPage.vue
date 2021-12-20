@@ -1,16 +1,16 @@
 <template>
   <div class="settings">
-    <Settings />
+    <setting />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Settings from "@/components/Settings.vue";
+import Setting from "@/components/Setting.vue";
 export default defineComponent({
-  name: "UserSettings",
+  name: "SettingPage",
   components: {
-    Settings,
+    Setting,
   },
 });
 </script>

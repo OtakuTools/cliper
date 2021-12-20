@@ -4,6 +4,11 @@ import { app, protocol, BrowserWindow, globalShortcut, clipboard, Tray, Menu, ip
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
+import Store from "electron-store";
+
+// 初始化，否则渲染进程会卡死
+Store.initRenderer();
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready

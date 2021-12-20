@@ -2,17 +2,33 @@
   <div>
     <!-- <el-button @click="addChannel('1234')">添加频道</el-button> -->
     <el-tabs editable @edit="handleChannelEdit" v-model="currentChannel">
-      <el-tab-pane :label="channel" v-for="channel in channelIdList" v-bind:key="channel" :name="channel">
+      <el-tab-pane :label="channel.split('_')[0]" v-for="channel in channelIdList" v-bind:key="channel" :name="channel">
         <recv-list-component :channelInfo="channel" :recvFileList="recvDataList.get(channel)" />
       </el-tab-pane>
     </el-tabs>
+
+    <el-dialog v-model="dialogFormVisible" title="添加频道" width="80%" :show-close="false" fullscreen>
+    <el-form :model="channelForm" label-width="80px">
+      <el-form-item label="频道号">
+        <el-input v-model="channelForm.roomId" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="频道密码">
+        <el-input v-model="channelForm.roomPsw" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleDialogConfirm">确认</el-button>
+      </span>
+    </template>
+  </el-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
-import { ElMessageBox, ElMessage } from 'element-plus'
 import Socket, { SocketMessage } from "../socket";
 
 export default defineComponent({
@@ -29,7 +45,12 @@ export default defineComponent({
       channelIdList: [] as string[],
       channelWsList: new Map<string, Socket>(),
       recvDataList: new Map<string, SocketMessage[]>(),
-      currentChannel: ''
+      currentChannel: '',
+      dialogFormVisible: false,
+      channelForm: {
+        roomId: '',
+        roomPsw: ''
+      }
     });
 
     return {
@@ -70,27 +91,21 @@ export default defineComponent({
     handleChannelEdit(targetName: string, action: string) {
       console.log('action',action,targetName)
       if (action === 'add') {
-        ElMessageBox.prompt('请输入频道号', '提示', {
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel',
-          inputPattern:
-            /\d+/,
-          inputErrorMessage: '非法频道号',
-        })
-        .then(({ value }) => {
-          this.addChannel(value)
-        })
-        .catch(() => {
-          ElMessage({
-            type: 'info',
-            message: '添加频道失败',
-          })
-        })
+        this.dialogFormVisible = true;
       }
       if (action === 'remove') {
         this.removeChannel(targetName)
       }
     },
+
+    handleDialogConfirm() {
+      this.dialogFormVisible = false;
+      this.addChannel(this.channelForm.roomId + '_' + this.channelForm.roomPsw)
+      this.channelForm = {
+        roomId: '',
+        roomPsw: ''
+      }
+    }
   }
 })
 </script>

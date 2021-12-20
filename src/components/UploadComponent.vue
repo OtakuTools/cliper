@@ -51,7 +51,7 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, onMounted } from "vue";
+import { defineComponent, reactive, toRefs, onMounted, onActivated, getCurrentInstance, watch } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { Config, CosInstance } from "../config";
 import Socket, { SocketMessage } from '../socket';
@@ -64,7 +64,8 @@ export default defineComponent({
   setup() {
     const data = reactive({
       fileList: [] as any[],
-      ws: new Socket('1234', (msg: any) => { console.log(msg)}),
+      channelId: '',
+      ws: null as any as Socket
     });
 
 
@@ -78,6 +79,15 @@ export default defineComponent({
         data.fileList.push(newData);
       }
     }
+
+    watch(() => data.channelId, (cid: string) => {
+      data.ws = new Socket(cid, (data) => { console.log(data) })
+    })
+
+    onActivated(() => {
+      const { proxy } = getCurrentInstance() as any;
+      data.channelId = proxy.$root.$route.query.channelId;
+    })
 
     onMounted(() => {
 
