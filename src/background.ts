@@ -108,6 +108,9 @@ async function createWindow() {
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   globalShortcut.unregisterAll()
+  const store = new Store();
+  store.delete('historyRecord');
+  store.delete('historyUpdate');
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {

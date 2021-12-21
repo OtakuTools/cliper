@@ -1,12 +1,16 @@
 <template>
   <div class="settings">
-    历史消息
+    <history-record-component />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import HistoryRecordComponent from "../components/HistoryRecordComponent.vue"
 export default defineComponent({
   name: "HistoryPage",
+  components: {
+    HistoryRecordComponent
+  }
 });
 </script>

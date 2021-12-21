@@ -55,6 +55,9 @@ import { defineComponent, reactive, toRefs, onMounted, onActivated, getCurrentIn
 import { UploadFilled } from '@element-plus/icons-vue';
 import { Config, CosInstance } from "../config";
 import Socket, { SocketMessage } from '../socket';
+import Store from 'electron-store';
+
+const store = new Store();
 
 export default defineComponent({
   name: "UploadComponent",
@@ -174,6 +177,10 @@ export default defineComponent({
       const promiseQue = data.fileList.map(file => putObject(file.raw))
       Promise.all(promiseQue).then(res => {
         sendMessage(res);
+        const history: any = store.get('historyRecord', []);
+        store.set('historyRecord', res.concat(history));
+        store.set('historyUpdate', true);
+        data.fileList = [];
       })
     }
 

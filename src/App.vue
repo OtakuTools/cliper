@@ -21,7 +21,7 @@
   </el-menu>
   <div style="height: 300px; overflow-y: auto;">
     <router-view v-slot="{ Component }">
-      <keep-alive include="SendPage,RecvPage">
+      <keep-alive include="SendPage,RecvPage,HistoryPage,SettingPage">
         <component :is="Component" style="margin-top: 4px;" />
       </keep-alive>
     </router-view>
@@ -38,8 +38,9 @@ export default defineComponent({
   name: "MainPage",
   methods: {
     handleSelect(index: string) {
-      const setting : any = store.get('userSetting') || { roomId: '', roomPsw: ''}
-      console.log('setting', setting)
+      const setting : any = store.get('userSetting', { roomId: '', roomPsw: ''})
+      const needUpdate : any = store.get('updateHistoy', true)
+      console.log('setting', setting, needUpdate)
       if (index === '1') {
         this.$router.push({
           path: '/sendpage',
@@ -53,7 +54,10 @@ export default defineComponent({
         })
       } else if (index === '3') {
         this.$router.push({
-          path: '/historypage'
+          path: '/historypage',
+          query: {
+            needUpdate
+          }
         })
       } else {
         this.$router.push({

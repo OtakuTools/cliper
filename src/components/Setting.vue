@@ -26,12 +26,12 @@ const store = new Store();
 export default defineComponent({
   name: "Setting",
   setup() {
-    const prevData : any = store.get('userSetting');
+    const prevData : any = store.get('userSetting', { roomId: '', roomPsw: '', downloadPath: ''});
 
     const data = reactive({
-      roomId: prevData?.roomId || '',
-      roomPsw: prevData?.roomPsw || '',
-      downloadPath: prevData?.downloadPath || ''
+      roomId: prevData.roomId || '',
+      roomPsw: prevData.roomPsw || '',
+      downloadPath: prevData.downloadPath || ''
     });
 
     watch(() => data, () => {
