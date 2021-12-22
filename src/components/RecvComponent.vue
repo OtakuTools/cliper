@@ -53,58 +53,58 @@ export default defineComponent({
       }
     });
 
-    return {
-      ...toRefs(data)
-    }
-  },
-
-  methods: {
-    addChannel(channelId: string) {
-      if (this.channelIdList.includes(channelId)) {
+    function addChannel(channelId: string) {
+      if (data.channelIdList.includes(channelId)) {
         return;
       }
-      this.recvDataList.set(channelId, [])
+      data.recvDataList.set(channelId, [])
       const ws = new Socket(channelId, (msg: SocketMessage[]) => {
-        const data = this.recvDataList.get(channelId) || [];
-        data.push(...msg);
+        const target = data.recvDataList.get(channelId) || [];
+        target.push(...msg);
       })
-      this.channelWsList.set(channelId, ws);
-      this.channelIdList.push(channelId);
-      this.currentChannel = channelId;
-    },
+      data.channelWsList.set(channelId, ws);
+      data.channelIdList.push(channelId);
+      data.currentChannel = channelId;
+    }
 
-    removeChannel(channelId: string) {
-      if (!this.channelIdList.includes(channelId)) {
-        return;
-      }
-      this.recvDataList.delete(channelId)
-      const ws = this.channelWsList.get(channelId);
-      ws?.close();
-      this.channelWsList.delete(channelId);
-      if (channelId === this.currentChannel) {
-        const index = this.channelIdList.findIndex(id => id === channelId);
-        this.currentChannel = this.channelIdList[index - 1] || this.channelIdList[index + 1] || '';
-      }
-      this.channelIdList = this.channelIdList.filter(id => id !== channelId);
-    },
-
-    handleChannelEdit(targetName: string, action: string) {
-      console.log('action',action,targetName)
-      if (action === 'add') {
-        this.dialogFormVisible = true;
-      }
-      if (action === 'remove') {
-        this.removeChannel(targetName)
-      }
-    },
-
-    handleDialogConfirm() {
-      this.dialogFormVisible = false;
-      this.addChannel(this.channelForm.roomId + '_' + this.channelForm.roomPsw)
-      this.channelForm = {
+    function handleDialogConfirm() {
+      data.dialogFormVisible = false;
+      addChannel(data.channelForm.roomId + '_' + data.channelForm.roomPsw)
+      data.channelForm = {
         roomId: '',
         roomPsw: ''
       }
+    }
+
+    function removeChannel(channelId: string) {
+      if (!data.channelIdList.includes(channelId)) {
+        return;
+      }
+      data.recvDataList.delete(channelId)
+      const ws = data.channelWsList.get(channelId);
+      ws?.close();
+      data.channelWsList.delete(channelId);
+      if (channelId === data.currentChannel) {
+        const index = data.channelIdList.findIndex(id => id === channelId);
+        data.currentChannel = data.channelIdList[index - 1] || data.channelIdList[index + 1] || '';
+      }
+      data.channelIdList = data.channelIdList.filter(id => id !== channelId);
+    }
+
+    function handleChannelEdit(targetName: string, action: string) {
+      console.log('action',action,targetName)
+      if (action === 'add') {
+        data.dialogFormVisible = true;
+      }
+      if (action === 'remove') {
+        removeChannel(targetName)
+      }
+    }
+
+    return {
+      ...toRefs(data),
+      handleDialogConfirm,
+      handleChannelEdit
     }
   }
 })
