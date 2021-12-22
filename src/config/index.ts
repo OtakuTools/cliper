@@ -11,16 +11,24 @@ export const Config = {
   receivePassword: "",
 };
 
-const store = new Store();
-
-// 用户设定
+// 用户设定库
 const USER_SETTING_KEY = 'userSetting'
-type UserSetting = {
+export type RoomInfo = {
   roomId: string
   roomPsw: string
+}
+export type UserSetting = RoomInfo & {
   downloadPath: string
 }
-export const userSetting = reactive(store.get(USER_SETTING_KEY, { roomId: '', roomPsw: '', downloadPath: ''}) as UserSetting)
+
+
+type StoreType = {
+  [USER_SETTING_KEY]: UserSetting
+}
+const store = new Store<StoreType>();
+
+// 用户设定
+export const userSetting = reactive(store.get(USER_SETTING_KEY, { roomId: '', roomPsw: '', downloadPath: ''}))
 watch(userSetting, (userSetting) => {
   store.set(USER_SETTING_KEY, userSetting)
 }, { deep: true })

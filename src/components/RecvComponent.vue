@@ -30,6 +30,7 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import Socket, { SocketMessage } from "../socket";
+import { userSetting, RoomInfo } from '../config/index'
 
 export default defineComponent({
   name: "RecvComponent",
@@ -53,6 +54,10 @@ export default defineComponent({
       }
     });
 
+    function formatChannelId(roomInfo: RoomInfo): string {
+      return roomInfo.roomId + '_' + roomInfo.roomPsw
+    }
+
     function addChannel(channelId: string) {
       if (data.channelIdList.includes(channelId)) {
         return;
@@ -69,7 +74,7 @@ export default defineComponent({
 
     function handleDialogConfirm() {
       data.dialogFormVisible = false;
-      addChannel(data.channelForm.roomId + '_' + data.channelForm.roomPsw)
+      addChannel(formatChannelId(data.channelForm))
       data.channelForm = {
         roomId: '',
         roomPsw: ''
@@ -100,6 +105,9 @@ export default defineComponent({
         removeChannel(targetName)
       }
     }
+
+    // 默认加入发送的频道
+    addChannel(formatChannelId(userSetting))
 
     return {
       ...toRefs(data),
