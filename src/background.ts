@@ -58,6 +58,17 @@ async function createWindow() {
     win.setSkipTaskbar(true);
   })
 
+  // 监听渲染进程发出的input file事件
+  ipcMain.on('REQUEST_DOWNLOAD_PATH', async (evt, opts: Electron.OpenDialogOptions = {}) => {
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      properties: ['openDirectory'],
+      ...opts
+    })
+    if (!canceled) {
+      evt.sender.send('INPUT_DOWNLOAD_PATH', filePaths)
+    }
+  })
+
   win.webContents.on('dom-ready', function(){
     globalShortcut.register('Alt+v',function(){
       win.webContents.send('pageData', {'text': clipboard.readText()});

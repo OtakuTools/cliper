@@ -11,7 +11,7 @@
         <el-input v-model="roomPsw"></el-input>
       </el-form-item>
       <el-form-item label="下载路径">
-        <el-input v-model="downloadPath"></el-input>
+        <DirectoryInput v-model="downloadPath" />
       </el-form-item>
     </el-form>
   </div>
@@ -20,10 +20,12 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, watch } from "vue";
 import Store from "electron-store"
+import DirectoryInput from "./DirectoryInput.vue";
 
 const store = new Store();
 
 export default defineComponent({
+  components: { DirectoryInput },
   name: "Setting",
   setup() {
     const prevData : any = store.get('userSetting', { roomId: '', roomPsw: '', downloadPath: ''});
