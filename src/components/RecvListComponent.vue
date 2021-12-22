@@ -70,7 +70,8 @@ export default defineComponent({
         navigator.clipboard.writeText(file.data);
       } else {
         ipcRenderer.send('download', JSON.stringify({
-          downloadUrl: file.data
+          downloadUrl: file.data,
+          name: file.name
         }));
       }
     }
