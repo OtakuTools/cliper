@@ -1,4 +1,6 @@
 import axios from "axios";
+import Store from "electron-store"
+import { reactive, watch } from "vue";
 
 export const Config = {
   wsServerURL: "wss://iclass-saas.api.qcloud.com/connection/websocket",
@@ -8,6 +10,21 @@ export const Config = {
   sendPassword: "",
   receivePassword: "",
 };
+
+const store = new Store();
+
+// 用户设定
+const USER_SETTING_KEY = 'userSetting'
+type UserSetting = {
+  roomId: string
+  roomPsw: string
+  downloadPath: string
+}
+export const userSetting = reactive(store.get(USER_SETTING_KEY, { roomId: '', roomPsw: '', downloadPath: ''}) as UserSetting)
+watch(userSetting, (userSetting) => {
+  store.set(USER_SETTING_KEY, userSetting)
+}, { deep: true })
+
 
 export const CosInstance = new window.COS({
   async getAuthorization(options: unknown, callback: (arg0: unknown) => void) {

@@ -18,32 +18,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, watch } from "vue";
-import Store from "electron-store"
+import { defineComponent, toRefs } from "vue";
 import DirectoryInput from "./DirectoryInput.vue";
-
-const store = new Store();
+import { userSetting } from "../config/index"
 
 export default defineComponent({
   components: { DirectoryInput },
   name: "Setting",
   setup() {
-    const prevData : any = store.get('userSetting', { roomId: '', roomPsw: '', downloadPath: ''});
-
-    const data = reactive({
-      roomId: prevData.roomId || '',
-      roomPsw: prevData.roomPsw || '',
-      downloadPath: prevData.downloadPath || ''
-    });
-
-    watch(() => data, () => {
-      store.set('userSetting.roomId', data.roomId);
-      store.set('userSetting.roomPsw', data.roomPsw);
-      store.set('userSetting.downloadPath', data.downloadPath);
-    }, { deep: true })
-
     return {
-      ...toRefs(data),
+      ...toRefs(userSetting),
     };
   },
 });
