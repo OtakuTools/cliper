@@ -55,6 +55,7 @@ import { defineComponent, reactive, toRefs, onMounted, onActivated, getCurrentIn
 import { UploadFilled } from '@element-plus/icons-vue';
 import { Config, CosInstance } from "../config";
 import Socket, { SocketMessage } from '../socket';
+import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
 
 const store = new Store();
@@ -99,7 +100,8 @@ export default defineComponent({
         "paste",
         (event) => {
           for (let entity of event.clipboardData?.items || []) {
-            if (entity.kind === "string") {
+            // 仅粘贴纯文本
+            if (entity.kind === "string" && entity.type === 'text/plain') {
               entity.getAsString((message) => {
                 addToFileList({
                   type: 'text',
@@ -195,6 +197,11 @@ export default defineComponent({
     function uploadFileChange(file: any, fileList: any) {
       addToFileList(file);
     }
+
+    ipcRenderer.on('callResend', (evt, args) => {
+      const data = JSON.parse(args);
+      sendMessage(data);
+    })
 
     return {
       ...toRefs(data),

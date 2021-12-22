@@ -4,7 +4,7 @@
       <div class="data_text">{{ data.name }}</div>
       <div class="data_info">
         <span class="data_size">大小：{{ (data.size / 1000).toFixed(2) + 'KB' }}</span>
-        <span class="data_time">时间：{{ data.timestamp }}</span>
+        <span class="data_time">时间：{{ formatDate(data.timestamp) }}</span>
       </div>
     </div>
   </card>
@@ -51,6 +51,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { ipcRenderer } from 'electron';
+import dayjs from 'dayjs';
 
 export default defineComponent({
   name: "RecvListComponent",
@@ -59,8 +60,12 @@ export default defineComponent({
     recvFileList: Array
   },
 
-  methods: {
-    downloadData(file: any) {
+  setup() {
+    const formatDate = (timestamp: number) => {
+      return dayjs(timestamp).format('MM-DD HH:mm:ss');
+    }
+
+    const downloadData = (file: any) => {
       if (file.type === 'text') {
         navigator.clipboard.writeText(file.data);
       } else {
@@ -68,6 +73,11 @@ export default defineComponent({
           downloadUrl: file.data
         }));
       }
+    }
+
+    return {
+      formatDate,
+      downloadData
     }
   }
 })

@@ -4,7 +4,8 @@
       <div class="data_text">{{ data.name }}</div>
       <div class="data_info">
         <span class="data_size">大小：{{ (data.size / 1000).toFixed(2) + 'KB' }}</span>
-        <span class="data_time">时间：{{ data.timestamp }}</span>
+        <span class="data_time">时间：{{ formatDate(data.timestamp) }}</span>
+        <el-button class="data_icon" type="text" @click="resend(data)">重新发送</el-button>
       </div>
     </div>
   </card>
@@ -32,6 +33,7 @@
   color: #888;
   font-size: 12px;
   margin-top: 4px;
+  display: flex;
 }
 
 .data_info > span {
@@ -39,17 +41,26 @@
 }
 
 .data_size {
-  width: 20px;
+  width: 80px;
   margin-left: 0 !important;
 }
 
 .data_time {
-  width: 20px;
+  flex: 1;
+}
+
+.data_icon {
+  min-height: 12px !important;
+  padding: 0;
+  font-size: 12px;
+  width: 60px;
 }
 </style>
 
 <script lang="ts">
 import { defineComponent, onActivated, reactive, toRefs, getCurrentInstance } from "vue";
+import { ipcRenderer } from 'electron';
+import dayjs from 'dayjs';
 import Store from 'electron-store';
 
 const store = new Store();
@@ -70,9 +81,19 @@ export default defineComponent({
         store.set('historyUpdate', false)
       }
     })
+    
+    const resend = (msg: any) => {
+      ipcRenderer.send('resend', JSON.stringify([msg]));
+    }
+
+    const formatDate = (timestamp: number) => {
+      return dayjs(timestamp).format('MM-DD HH:mm:ss')
+    }
 
     return {
-      ...toRefs(data)
+      ...toRefs(data),
+      resend,
+      formatDate
     }
   }
 })

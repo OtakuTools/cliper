@@ -91,6 +91,9 @@ async function createWindow() {
       })
     });
 
+    ipcMain.on('resend', async (evt, args) => {
+      win.webContents.send('callResend', args);
+    })
     
   });
 
