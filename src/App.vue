@@ -30,24 +30,21 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import Store from "electron-store"
 import { useRoute, useRouter } from "vue-router";
-
-const store = new Store();
+import { userSetting, formatChannelId, updateHistory } from './config/index'
 
 export default defineComponent({
   name: "MainPage",
   setup() {
     const router = useRouter()
     function handleSelect(index: string) {
-      const setting : any = store.get('userSetting', { roomId: '', roomPsw: ''})
-      const needUpdate : any = store.get('updateHistoy', true)
-      console.log('setting', setting, needUpdate)
+      const setting = userSetting
+      const needUpdate = updateHistory.value
       router.push({ 
         name: index,
         query: {
-          channelId: setting.roomId + '_' + setting.roomPsw,
-          needUpdate,
+          channelId: formatChannelId(setting),
+          needUpdate: needUpdate.toString(),
         }
       })
     }

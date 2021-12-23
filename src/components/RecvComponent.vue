@@ -30,7 +30,7 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import Socket, { SocketMessage } from "../socket";
-import { userSetting, RoomInfo } from '../config/index'
+import { userSetting, formatChannelId } from '../config/index'
 
 export default defineComponent({
   name: "RecvComponent",
@@ -53,10 +53,6 @@ export default defineComponent({
         roomPsw: ''
       }
     });
-
-    function formatChannelId(roomInfo: RoomInfo): string {
-      return roomInfo.roomId + '_' + roomInfo.roomPsw
-    }
 
     function addChannel(channelId: string) {
       if (data.channelIdList.includes(channelId)) {

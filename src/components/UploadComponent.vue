@@ -53,13 +53,10 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, onMounted, onActivated, watch } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
-import { Config, CosInstance } from "../config";
+import { CosInstance, updateHistory, historyRecord } from "../config";
 import Socket, { SocketMessage } from '../socket';
 import { ipcRenderer } from 'electron';
-import Store from 'electron-store';
 import { useRoute } from "vue-router";
-
-const store = new Store();
 
 export default defineComponent({
   name: "UploadComponent",
@@ -180,9 +177,9 @@ export default defineComponent({
       const promiseQue = data.fileList.map(file => putObject(file.raw))
       Promise.all(promiseQue).then(res => {
         sendMessage(res);
-        const history: any = store.get('historyRecord', []);
-        store.set('historyRecord', res.concat(history));
-        store.set('historyUpdate', true);
+        const history = historyRecord.value;
+        historyRecord.value = res.concat(history);
+        updateHistory.value = true;
         data.fileList = [];
       })
     }

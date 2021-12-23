@@ -61,29 +61,27 @@
 import { defineComponent, onActivated, reactive, toRefs } from "vue";
 import { ipcRenderer } from 'electron';
 import dayjs from 'dayjs';
-import Store from 'electron-store';
 import { useRoute } from "vue-router";
-
-const store = new Store();
+import { historyRecord, updateHistory } from '../config'
 
 export default defineComponent({
   name: "HistoryRecordComponent",
 
   setup() {
     const data = reactive({
-      historyFile: [] as any
+      historyFile: [] as (typeof historyRecord.value)
     })
 
     onActivated(() => {
       const route = useRoute()
       const needUpdate = route.query.needUpdate;
       if (needUpdate) {
-        data.historyFile = store.get('historyRecord', []);
-        store.set('historyUpdate', false)
+        data.historyFile = historyRecord.value;
+        updateHistory.value = false
       }
     })
     
-    const resend = (msg: any) => {
+    const resend = (msg: typeof historyRecord.value[0]) => {
       ipcRenderer.send('resend', JSON.stringify([msg]));
     }
 
