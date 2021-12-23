@@ -51,12 +51,13 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, onMounted, onActivated, getCurrentInstance, watch } from "vue";
+import { defineComponent, reactive, toRefs, onMounted, onActivated, watch } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { Config, CosInstance } from "../config";
 import Socket, { SocketMessage } from '../socket';
 import { ipcRenderer } from 'electron';
 import Store from 'electron-store';
+import { useRoute } from "vue-router";
 
 const store = new Store();
 
@@ -89,8 +90,8 @@ export default defineComponent({
     })
 
     onActivated(() => {
-      const { proxy } = getCurrentInstance() as any;
-      data.channelId = proxy.$root.$route.query.channelId;
+      const route = useRoute();
+      data.channelId = route.query.channelId as string;
     })
 
     onMounted(() => {

@@ -58,10 +58,11 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, onActivated, reactive, toRefs, getCurrentInstance } from "vue";
+import { defineComponent, onActivated, reactive, toRefs } from "vue";
 import { ipcRenderer } from 'electron';
 import dayjs from 'dayjs';
 import Store from 'electron-store';
+import { useRoute } from "vue-router";
 
 const store = new Store();
 
@@ -74,8 +75,8 @@ export default defineComponent({
     })
 
     onActivated(() => {
-      const { proxy } = getCurrentInstance() as any;
-      const needUpdate = proxy.$root.$route.query.needUpdate;
+      const route = useRoute()
+      const needUpdate = route.query.needUpdate;
       if (needUpdate) {
         data.historyFile = store.get('historyRecord', []);
         store.set('historyUpdate', false)
