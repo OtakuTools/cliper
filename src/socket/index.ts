@@ -1,3 +1,5 @@
+import { isOnline } from "../store"
+
 export interface SocketMessage {
   name: string
   type: "url" | "text"
@@ -10,6 +12,7 @@ export default class Socket {
 
   msgCallback: (data: SocketMessage[]) => void
   socket: WebSocket
+  alive = true
 
   constructor(channelId: string, msgCallback: (data: SocketMessage[]) => void) {
     this.socket = new WebSocket(`ws://service-7xa83x7r-1259648581.sh.apigw.tencentcs.com:80/websocket?channelID=` + channelId);
@@ -17,11 +20,11 @@ export default class Socket {
     this.initEvent();
   }
 
-  socketSend(message: SocketMessage[]) {
-    return this.socket.send(JSON.stringify(message))
+  socketSend(message: SocketMessage[]): void {
+    this.alive && this.socket.send(JSON.stringify(message))
   }
 
-  initEvent() {
+  initEvent(): void {
     this.socket.addEventListener('message', ({ data: data }) => {
       try {
         this.msgCallback(JSON.parse(data) as SocketMessage[]);
@@ -30,20 +33,33 @@ export default class Socket {
       }
     });
 
-    this.socket.addEventListener('close', (e) => { console.log('close', e) })
-    this.socket.addEventListener('error', (e) => { console.log('error', e) })
-    this.socket.addEventListener('disconnect', (e) => { console.log('disconnect', e) })
+    this.socket.addEventListener('close', (e) => {
+      console.log('close', e);
+      this.setOffline();
+    })
+    this.socket.addEventListener('error', (e) => {
+      console.log('error', e);
+    })
+    this.socket.addEventListener('disconnect', (e) => {
+      console.log('disconnect', e);
+      this.setOffline();
+    })
 
     this.keepAlive();
   }
 
-  keepAlive() {
-    setInterval(() => {
-      this.socketSend([]);
-    }, 10000);
+  setOffline(): void {
+    this.alive = false;
+    isOnline.value = false;
   }
 
-  close() {
-    this.socket.close()
+  keepAlive(): void {
+    setInterval(() => {
+      this.socketSend([]);
+    }, 1000);
+  }
+
+  close(): void {
+    this.alive && this.socket.close()
   }
 }
