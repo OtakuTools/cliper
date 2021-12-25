@@ -31,19 +31,17 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { userSetting, formatChannelId, updateHistory } from './store'
+import { updateHistory } from './store'
 
 export default defineComponent({
   name: "MainPage",
   setup() {
     const router = useRouter()
     function handleSelect(index: string) {
-      const setting = userSetting
       const needUpdate = updateHistory.value
       router.push({ 
         name: index,
         query: {
-          channelId: formatChannelId(setting),
           needUpdate: needUpdate.toString(),
         }
       })

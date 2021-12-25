@@ -9,6 +9,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/sendpage",
     name: "SendPage",
     component: SendPage,
+    props: route => ({ channelId: route.query.channelId })
   },
   {
     path: "/recvpage",

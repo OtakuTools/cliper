@@ -51,23 +51,27 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, onMounted, onActivated, watch } from "vue";
+import { defineComponent, reactive, toRefs, onMounted, watchEffect } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { CosInstance } from "../config";
 import { updateHistory, historyRecord } from "../store";
 import Socket, { SocketMessage } from '../socket';
 import { ipcRenderer } from 'electron';
-import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "UploadComponent",
+  props: {
+    channelId: {
+      type: String,
+      required: true,
+    }
+  },
   components: {
     UploadFilled,
   },
-  setup() {
+  setup(props) {
     const data = reactive({
       fileList: [] as any[],
-      channelId: '',
       ws: null as any as Socket
     });
 
@@ -83,13 +87,9 @@ export default defineComponent({
       }
     }
 
-    watch(() => data.channelId, (cid: string) => {
-      data.ws = new Socket(cid, (data) => { console.log(data) })
-    })
-
-    onActivated(() => {
-      const route = useRoute();
-      data.channelId = route.query.channelId as string;
+    watchEffect(() => {
+      const cid = props.channelId;
+      data.ws = new Socket(cid, (data) => { console.log(data) });
     })
 
     onMounted(() => {

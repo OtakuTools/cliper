@@ -30,7 +30,7 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import Socket, { SocketMessage } from "../socket";
-import { userSetting, formatChannelId } from '../store';
+import { settingChannel, formatChannelId } from '../store';
 
 export default defineComponent({
   name: "RecvComponent",
@@ -103,7 +103,7 @@ export default defineComponent({
     }
 
     // 默认加入发送的频道
-    addChannel(formatChannelId(userSetting))
+    addChannel(settingChannel.value)
 
     return {
       ...toRefs(data),

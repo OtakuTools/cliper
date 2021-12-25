@@ -3,7 +3,7 @@
  * 持久储存层
  */
 import Store from "electron-store"
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, computed } from "vue";
 import { SocketMessage } from '../socket'
 import { USER_SETTING_KEY, UPDATE_HISTORY_KEY, HISTORY_RECORD_KEY } from '../constant'
 
@@ -45,6 +45,7 @@ export const userSetting = useStoreReactive(USER_SETTING_KEY, { roomId: '', room
 export function formatChannelId(roomInfo: RoomInfo): string {
   return roomInfo.roomId + '_' + roomInfo.roomPsw
 }
+export const settingChannel = computed(() => formatChannelId(userSetting))
 
 /** 更新历史 */
 export const updateHistory = useStoreRef(UPDATE_HISTORY_KEY, true);
