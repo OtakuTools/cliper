@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent, toRefs } from "vue";
 import DirectoryInput from "./DirectoryInput.vue";
-import { userSetting } from "../config/index"
+import { userSetting } from "../store";
 
 export default defineComponent({
   components: { DirectoryInput },

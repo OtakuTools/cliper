@@ -53,7 +53,8 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, onMounted, onActivated, watch } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
-import { CosInstance, updateHistory, historyRecord } from "../config";
+import { CosInstance } from "../config";
+import { updateHistory, historyRecord } from "../store";
 import Socket, { SocketMessage } from '../socket';
 import { ipcRenderer } from 'electron';
 import { useRoute } from "vue-router";

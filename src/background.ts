@@ -7,6 +7,7 @@ import path from "path";
 import Store from "electron-store";
 import fs from 'fs';
 import axios from "axios";
+import { HISTORY_RECORD_KEY, UPDATE_HISTORY_KEY } from './constant'
 
 // 初始化，否则渲染进程会卡死
 Store.initRenderer();
@@ -123,8 +124,8 @@ async function createWindow() {
 app.on("window-all-closed", () => {
   globalShortcut.unregisterAll()
   const store = new Store();
-  store.delete('historyRecord');
-  store.delete('historyUpdate');
+  store.delete(HISTORY_RECORD_KEY);
+  store.delete(UPDATE_HISTORY_KEY);
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {

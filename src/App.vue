@@ -31,7 +31,7 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { userSetting, formatChannelId, updateHistory } from './config/index'
+import { userSetting, formatChannelId, updateHistory } from './store'
 
 export default defineComponent({
   name: "MainPage",

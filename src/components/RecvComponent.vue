@@ -30,7 +30,7 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import Socket, { SocketMessage } from "../socket";
-import { userSetting, formatChannelId } from '../config/index'
+import { userSetting, formatChannelId } from '../store';
 
 export default defineComponent({
   name: "RecvComponent",
