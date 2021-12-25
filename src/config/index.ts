@@ -1,4 +1,5 @@
 import axios from "axios";
+import COS from 'cos-js-sdk-v5';
 
 /** ws配置 */
 export const Config = {
@@ -11,8 +12,8 @@ export const Config = {
 };
 
 /** Cos实例 */
-export const CosInstance = new window.COS({
-  async getAuthorization(options: unknown, callback: (arg0: unknown) => void) {
+export const CosInstance = new COS({
+  async getAuthorization(options, callback) {
     // 异步获取临时密钥
     const res = await axios({
       method: "post",
