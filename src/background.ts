@@ -168,3 +168,6 @@ if (isDevelopment) {
     });
   }
 }
+
+// 隐藏build后的默认菜单
+Menu.setApplicationMenu(null);

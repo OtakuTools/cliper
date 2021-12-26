@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw } from "vue-router";
 import SendPage from "../views/SendPage.vue";
 import RecvPage from "../views/RecvPage.vue";
 import HistoryPage from "../views/HistoryPage.vue";
@@ -27,13 +27,17 @@ const routes: Array<RouteRecordRaw> = [
     component: SettingPage,
   },
   {
-    path: "/",
+    path: "",
     redirect: '/sendpage'
   },
 ];
 
+const history = process.env.NODE_ENV === 'production' && process.env.IS_ELECTRON
+    ? createWebHashHistory(process.env.BASE_URL)
+    : createWebHistory(process.env.BASE_URL)
+
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history,
   routes,
 });
 
