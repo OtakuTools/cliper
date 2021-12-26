@@ -1,8 +1,9 @@
 <template>
-  <el-input :modelValue="value" @click="handleInput" />
+  <el-input :modelValue="value" @click="handleFocus" @update:modelValue="handleInput" />
 </template>
 
 <script lang="ts">
+import { isBrowser, isElectron } from '@/constant'
 import { defineComponent, toRefs } from 'vue'
 import { bridge } from '../store'
 
@@ -28,17 +29,28 @@ export default defineComponent({
       }
     }
 
-    function handleInput () {
-      bridge.on('INPUT_DOWNLOAD_PATH', (evt: unknown, files: string[]) => {
-        setValue(files[0] || '')
-      });
-      bridge.send('REQUEST_DOWNLOAD_PATH', { defaultPath: valueRef.value || 'C:\\' });
-      return true
+    function handleFocus () {
+      // 在electron环境下调用gui选择文件夹
+      if(isElectron){
+        bridge.on('INPUT_DOWNLOAD_PATH', (evt: unknown, files: string[]) => {
+          setValue(files[0] || '')
+        });
+        bridge.send('REQUEST_DOWNLOAD_PATH', { defaultPath: valueRef.value || 'C:\\' });
+        return true
+      }
+    }
+
+    function handleInput (value: string) {
+      // 浏览器环境下输入文件夹路径
+      if(isBrowser){
+        emit('update:modelValue', value)
+      }
     }
 
     return {
       value: valueRef,
-      handleInput
+      handleInput,
+      handleFocus,
     }
   },
 })
