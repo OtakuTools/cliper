@@ -36,23 +36,27 @@ async function createWindow() {
   });
 
   // create tray
-  tray = new Tray(path.join(__dirname, 'bundled/favicon.ico'))
-  const contextMenu = Menu.buildFromTemplate([
-    { label: '退出', click: () => win.destroy() }
-  ])
-  tray.setToolTip('fast-clip');
-  tray.setContextMenu(contextMenu);
-  tray.on('click', () => {
-    const isVisible = win.isVisible()
-    console.log('tray click', isVisible)
-    if (isVisible) {
-      win.hide();
-      win.setSkipTaskbar(true);
-    } else {
-      win.show();
-      win.setSkipTaskbar(false);
-    }
-  })
+  try {
+    tray = new Tray(path.join(__dirname, '/favicon.ico'))
+    const contextMenu = Menu.buildFromTemplate([
+      { label: '退出', click: () => win.destroy() }
+    ])
+    tray.setToolTip('fast-clip');
+    tray.setContextMenu(contextMenu);
+    tray.on('click', () => {
+      const isVisible = win.isVisible()
+      console.log('tray click', isVisible)
+      if (isVisible) {
+        win.hide();
+        win.setSkipTaskbar(true);
+      } else {
+        win.show();
+        win.setSkipTaskbar(false);
+      }
+    })
+  } catch(e) {
+    console.log('tray 失败', e)
+  }
 
   win.setMenu(null);
 
