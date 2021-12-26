@@ -37,7 +37,7 @@ async function createWindow() {
 
   // create tray
   try {
-    tray = new Tray(path.join(__dirname, '/favicon.ico'))
+    tray = new Tray(path.join(__dirname, `${process.env.WEBPACK_DEV_SERVER_URL ? 'bundled/': ''}/favicon.ico`))
     const contextMenu = Menu.buildFromTemplate([
       { label: '退出', click: () => win.destroy() }
     ])
