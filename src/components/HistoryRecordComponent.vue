@@ -41,7 +41,7 @@
 }
 
 .data_size {
-  width: 80px;
+  width: 120px;
   margin-left: 0 !important;
 }
 
