@@ -52,6 +52,7 @@
 import { defineComponent } from "vue";
 import { bridge } from '../store'
 import dayjs from 'dayjs';
+import { EVENT } from "@/constant";
 
 export default defineComponent({
   name: "RecvListComponent",
@@ -69,7 +70,7 @@ export default defineComponent({
       if (file.type === 'text') {
         navigator.clipboard.writeText(file.data);
       } else {
-        bridge.send('download', JSON.stringify({
+        bridge.send(EVENT.DOWNLOAD, JSON.stringify({
           downloadUrl: file.data,
           name: file.name
         }));

@@ -56,6 +56,7 @@ import { UploadFilled } from '@element-plus/icons-vue';
 import { CosInstance } from "../config";
 import { updateHistory, historyRecord, bridge } from "../store";
 import Socket, { SocketMessage } from '../socket';
+import { EVENT } from "@/constant";
 
 export default defineComponent({
   name: "UploadComponent",
@@ -196,7 +197,7 @@ export default defineComponent({
       addToFileList(file);
     }
 
-    bridge.on('callResend', (evt: unknown, args: string) => {
+    bridge.on(EVENT.CALL_RESEND, (evt: unknown, args: string) => {
       const data = JSON.parse(args);
       sendMessage(data);
     })

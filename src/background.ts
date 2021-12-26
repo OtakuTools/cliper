@@ -7,7 +7,7 @@ import path from "path";
 import Store from "electron-store";
 import fs from 'fs';
 import axios from "axios";
-import { HISTORY_RECORD_KEY, UPDATE_HISTORY_KEY } from './constant'
+import { EVENT, HISTORY_RECORD_KEY, UPDATE_HISTORY_KEY } from './constant'
 
 // 初始化，否则渲染进程会卡死
 Store.initRenderer();
@@ -66,23 +66,23 @@ async function createWindow() {
   })
 
   // 监听渲染进程发出的input file事件
-  ipcMain.on('REQUEST_DOWNLOAD_PATH', async (evt, opts: Electron.OpenDialogOptions = {}) => {
+  ipcMain.on(EVENT.REQUEST_DOWNLOAD_PATH, async (evt, opts: Electron.OpenDialogOptions = {}) => {
     const { canceled, filePaths } = await dialog.showOpenDialog(win, {
       properties: ['openDirectory'],
       ...opts
     })
     if (!canceled) {
-      evt.sender.send('INPUT_DOWNLOAD_PATH', filePaths)
+      evt.sender.send(EVENT.INPUT_DOWNLOAD_PATH, filePaths)
     }
   })
 
   win.webContents.on('dom-ready', function(){
     globalShortcut.register('Alt+v',function(){
-      win.webContents.send('pageData', {'text': clipboard.readText()});
+      win.webContents.send(EVENT.PAGE_DATA, {'text': clipboard.readText()});
     })
 
     // 监听渲染进程发出的download事件
-    ipcMain.on('download', async (evt, args) => {
+    ipcMain.on(EVENT.DOWNLOAD, async (evt, args) => {
       let file = JSON.parse(args); 
     // 打开系统弹窗 选择文件下载位置
       dialog.showSaveDialog(win, {
@@ -107,8 +107,8 @@ async function createWindow() {
       })
     });
 
-    ipcMain.on('resend', async (evt, args) => {
-      win.webContents.send('callResend', args);
+    ipcMain.on(EVENT.RESEND, async (evt, args) => {
+      win.webContents.send(EVENT.CALL_RESEND, args);
     })
     
   });

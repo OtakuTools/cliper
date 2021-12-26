@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { isBrowser, isElectron } from '@/constant'
+import { EVENT, isBrowser, isElectron } from '@/constant'
 import { defineComponent, toRefs } from 'vue'
 import { bridge } from '../store'
 
@@ -32,10 +32,10 @@ export default defineComponent({
     function handleFocus () {
       // 在electron环境下调用gui选择文件夹
       if(isElectron){
-        bridge.on('INPUT_DOWNLOAD_PATH', (evt: unknown, files: string[]) => {
+        bridge.on(EVENT.INPUT_DOWNLOAD_PATH, (evt: unknown, files: string[]) => {
           setValue(files[0] || '')
         });
-        bridge.send('REQUEST_DOWNLOAD_PATH', { defaultPath: valueRef.value || 'C:\\' });
+        bridge.send(EVENT.REQUEST_DOWNLOAD_PATH, { defaultPath: valueRef.value || 'C:\\' });
         return true
       }
     }

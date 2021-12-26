@@ -14,6 +14,7 @@ import { defineComponent, reactive, toRefs, onMounted } from "vue";
 import { bridge } from "../store";
 import { Config, CosInstance } from "../config";
 import Centrifuge from "centrifuge";
+import { EVENT } from "@/constant";
 
 export default defineComponent({
   name: "ClipContentList",
@@ -129,8 +130,7 @@ export default defineComponent({
       // );
     });
 
-    bridge.on("pageData", function (event, message) {
-      console.log("pageData", message);
+    bridge.on(EVENT.PAGE_DATA, function (event, message) {
       clipboardListAddItem(message.text, message);
     });
 

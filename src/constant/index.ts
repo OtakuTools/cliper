@@ -17,17 +17,15 @@ export const UPDATE_HISTORY_KEY = 'updateHistoy';
 /** 历史记录库 */
 export const HISTORY_RECORD_KEY = 'historyRecord';
 
-export type EventName = 
-  | 'callResend'
-  | 'resend'
-  | 'download'
-  | 'INPUT_DOWNLOAD_PATH' // 返回gui选择的路径
-  | 'REQUEST_DOWNLOAD_PATH' // 请求gui选择文件路径
-  | 'pageData'
+export enum EVENT {
+  CALL_RESEND = 'CALL_RESEND',
+  RESEND = 'RESEND',
+  DOWNLOAD = 'DOWNLOAD',
+  PAGE_DATA = 'PAGE_DATA',
+  // 返回gui选择的路径
+  INPUT_DOWNLOAD_PATH = 'INPUT_DOWNLOAD_PATH',
+  // 请求gui选择文件路径
+  REQUEST_DOWNLOAD_PATH = 'REQUEST_DOWNLOAD_PATH' 
+}
 
-export const eventNames: EventName[] = [
-  'callResend',
-  'resend',
-  'download',
-  'pageData',
-]
+export type EventName = EVENT;
