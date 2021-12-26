@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { ipcRenderer } from 'electron';
+import { bridge } from '../store'
 import dayjs from 'dayjs';
 
 export default defineComponent({
@@ -69,7 +69,7 @@ export default defineComponent({
       if (file.type === 'text') {
         navigator.clipboard.writeText(file.data);
       } else {
-        ipcRenderer.send('download', JSON.stringify({
+        bridge.send('download', JSON.stringify({
           downloadUrl: file.data,
           name: file.name
         }));

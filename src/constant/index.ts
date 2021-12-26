@@ -6,7 +6,7 @@
 export const isElectron = !!process.env.IS_ELECTRON;
 
 /** 是否在一般浏览器环境 */
-export const isBrowser = !!(!isElectron && window);
+export const isBrowser = !!(!isElectron && typeof window !== 'undefined');
 
 /** 用户设定库 */
 export const USER_SETTING_KEY = 'userSetting';
@@ -16,3 +16,18 @@ export const UPDATE_HISTORY_KEY = 'updateHistoy';
 
 /** 历史记录库 */
 export const HISTORY_RECORD_KEY = 'historyRecord';
+
+export type EventName = 
+  | 'callResend'
+  | 'resend'
+  | 'download'
+  | 'INPUT_DOWNLOAD_PATH' // 返回gui选择的路径
+  | 'REQUEST_DOWNLOAD_PATH' // 请求gui选择文件路径
+  | 'pageData'
+
+export const eventNames: EventName[] = [
+  'callResend',
+  'resend',
+  'download',
+  'pageData',
+]

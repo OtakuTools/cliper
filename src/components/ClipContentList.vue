@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, onMounted } from "vue";
-import { ipcRenderer } from "electron";
+import { bridge } from "../store";
 import { Config, CosInstance } from "../config";
 import Centrifuge from "centrifuge";
 
@@ -129,7 +129,7 @@ export default defineComponent({
       // );
     });
 
-    ipcRenderer.on("pageData", function (event, message) {
+    bridge.on("pageData", function (event, message) {
       console.log("pageData", message);
       clipboardListAddItem(message.text, message);
     });

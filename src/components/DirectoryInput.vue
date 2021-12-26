@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue'
-import { ipcRenderer } from 'electron'
+import { bridge } from '../store'
 
 export default defineComponent({
   name: 'DirectoryInput',
@@ -29,10 +29,10 @@ export default defineComponent({
     }
 
     function handleInput () {
-      ipcRenderer.on('INPUT_DOWNLOAD_PATH', function (evt, files) {
+      bridge.on('INPUT_DOWNLOAD_PATH', (evt: unknown, files: string[]) => {
         setValue(files[0] || '')
       });
-      ipcRenderer.send('REQUEST_DOWNLOAD_PATH', { defaultPath: valueRef.value || 'C:\\' });
+      bridge.send('REQUEST_DOWNLOAD_PATH', { defaultPath: valueRef.value || 'C:\\' });
       return true
     }
 

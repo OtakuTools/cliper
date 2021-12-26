@@ -54,9 +54,8 @@
 import { defineComponent, reactive, toRefs, onMounted, watchEffect } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { CosInstance } from "../config";
-import { updateHistory, historyRecord } from "../store";
+import { updateHistory, historyRecord, bridge } from "../store";
 import Socket, { SocketMessage } from '../socket';
-import { ipcRenderer } from 'electron';
 
 export default defineComponent({
   name: "UploadComponent",
@@ -197,7 +196,7 @@ export default defineComponent({
       addToFileList(file);
     }
 
-    ipcRenderer.on('callResend', (evt, args) => {
+    bridge.on('callResend', (evt: unknown, args: string) => {
       const data = JSON.parse(args);
       sendMessage(data);
     })

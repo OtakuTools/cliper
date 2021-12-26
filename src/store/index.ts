@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import { ref, watchEffect } from 'vue'
 import { ElMessage, MessageHandle } from 'element-plus'
 export * from './electorn-store'
+export * from './bridge'
 
 export default createStore({
   state: {},

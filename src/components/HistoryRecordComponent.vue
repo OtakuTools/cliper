@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import { defineComponent, onActivated, reactive, toRefs } from "vue";
-import { ipcRenderer } from 'electron';
+import { bridge } from '../store';
 import dayjs from 'dayjs';
 import { useRoute } from "vue-router";
 import { historyRecord, updateHistory } from '../store'
@@ -82,7 +82,7 @@ export default defineComponent({
     })
     
     const resend = (msg: typeof historyRecord.value[0]) => {
-      ipcRenderer.send('resend', JSON.stringify([msg]));
+      bridge.send('resend', JSON.stringify([msg]));
     }
 
     const formatDate = (timestamp: number) => {
