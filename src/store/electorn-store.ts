@@ -4,7 +4,8 @@
  */
 import { ref, reactive, watch, computed } from "vue";
 import { SocketMessage } from '../socket'
-import { USER_SETTING_KEY, UPDATE_HISTORY_KEY, HISTORY_RECORD_KEY, isElectron } from '../constant'
+import { bridge } from "./bridge";
+import { USER_SETTING_KEY, UPDATE_HISTORY_KEY, HISTORY_RECORD_KEY, isElectron, EVENT, FEATURE_FLAGS } from '../constant'
 
 class LocalStore<T extends Record<string, unknown> = Record<string, unknown>> {
   get<Key extends keyof T>(key: Key, defaultValue: T[Key]): T[Key] {
@@ -74,7 +75,20 @@ export const userSetting = useStoreReactive(USER_SETTING_KEY, { roomId: '', room
 export function formatChannelId(roomInfo: RoomInfo): string {
   return roomInfo.roomId + '_' + roomInfo.roomPsw
 }
-export const settingChannel = computed(() => formatChannelId(userSetting))
+export const settingChannel = computed(() => formatChannelId(userSetting));
+// 初始化用户设定
+(function initDefaultSetting() {
+  if (FEATURE_FLAGS.INIT_DEFAULT_SETTING && isElectron && !userSetting.roomId) {
+    bridge.on(EVENT.GET_SYSTEM_NAME, (evt, name: string) => {
+      userSetting.roomId = name
+    })
+    bridge.send(EVENT.GET_SYSTEM_NAME)
+  }
+  if (FEATURE_FLAGS.INIT_DEFAULT_SETTING && !userSetting.roomPsw) {
+    const randomPsw = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    userSetting.roomPsw = randomPsw;
+  }
+})();
 
 /** 更新历史 */
 export const updateHistory = useStoreRef<boolean>(UPDATE_HISTORY_KEY, true);

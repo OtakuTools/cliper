@@ -24,6 +24,15 @@ export enum EVENT {
   PAGE_DATA = 'PAGE_DATA',
   /** 使用gui输入文件夹路径 */
   INPUT_DOWNLOAD_PATH = 'INPUT_DOWNLOAD_PATH',
+  /** 获取用户名 */
+  GET_SYSTEM_NAME = 'GET_SYSTEM_NAME',
 }
 
 export type EventName = EVENT;
+
+type FeatureName =
+  | 'INIT_DEFAULT_SETTING';
+/** feature flags */
+export const FEATURE_FLAGS: Record<FeatureName, boolean> = {
+  INIT_DEFAULT_SETTING: true
+};
