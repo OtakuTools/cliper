@@ -66,7 +66,7 @@ async function createWindow() {
   })
 
   // 监听渲染进程发出的input file事件
-  ipcMain.on(EVENT.REQUEST_DOWNLOAD_PATH, async (evt, opts: Electron.OpenDialogOptions = {}) => {
+  ipcMain.on(EVENT.INPUT_DOWNLOAD_PATH, async (evt, opts: Electron.OpenDialogOptions = {}) => {
     const { canceled, filePaths } = await dialog.showOpenDialog(win, {
       properties: ['openDirectory'],
       ...opts

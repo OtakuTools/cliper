@@ -35,7 +35,7 @@ export default defineComponent({
         bridge.on(EVENT.INPUT_DOWNLOAD_PATH, (evt: unknown, files: string[]) => {
           setValue(files[0] || '')
         });
-        bridge.send(EVENT.REQUEST_DOWNLOAD_PATH, { defaultPath: valueRef.value || 'C:\\' });
+        bridge.send(EVENT.INPUT_DOWNLOAD_PATH, { defaultPath: valueRef.value || 'C:\\' });
         return true
       }
     }

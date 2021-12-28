@@ -22,10 +22,8 @@ export enum EVENT {
   RESEND = 'RESEND',
   DOWNLOAD = 'DOWNLOAD',
   PAGE_DATA = 'PAGE_DATA',
-  // 返回gui选择的路径
+  /** 使用gui输入文件夹路径 */
   INPUT_DOWNLOAD_PATH = 'INPUT_DOWNLOAD_PATH',
-  // 请求gui选择文件路径
-  REQUEST_DOWNLOAD_PATH = 'REQUEST_DOWNLOAD_PATH' 
 }
 
 export type EventName = EVENT;
