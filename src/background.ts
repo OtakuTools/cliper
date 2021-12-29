@@ -7,7 +7,7 @@ import path from "path";
 import Store from "electron-store";
 import fs from 'fs';
 import axios from "axios";
-import { EVENT, HISTORY_RECORD_KEY, UPDATE_HISTORY_KEY } from './constant'
+import { FEATURE_FLAGS, EVENT, HISTORY_RECORD_KEY, UPDATE_HISTORY_KEY } from './constant'
 
 // 初始化，否则渲染进程会卡死
 Store.initRenderer();
@@ -75,6 +75,13 @@ async function createWindow() {
       evt.sender.send(EVENT.INPUT_DOWNLOAD_PATH, filePaths)
     }
   })
+
+  // 监听渲染进程请求系统名
+  if (FEATURE_FLAGS.INIT_DEFAULT_SETTING) {
+    ipcMain.on(EVENT.GET_SYSTEM_NAME, (evt) => {
+      evt.sender.send(EVENT.GET_SYSTEM_NAME, process.env.USERNAME || process.env.COMPUTERNAME);
+    });
+  }
 
   win.webContents.on('dom-ready', function(){
     globalShortcut.register('Alt+v',function(){
