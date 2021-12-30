@@ -3,6 +3,7 @@ import SendPage from "../views/SendPage.vue";
 import RecvPage from "../views/RecvPage.vue";
 import HistoryPage from "../views/HistoryPage.vue";
 import SettingPage from "../views/SettingPage.vue";
+import { isExtension, isElectron, isDevelopment } from '../constant'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -32,8 +33,12 @@ const routes: Array<RouteRecordRaw> = [
   },
 ];
 
-const history = process.env.NODE_ENV === 'production' && process.env.IS_ELECTRON
+console.log(process.env.BASE_URL, location.href);
+
+const history = !isDevelopment && isElectron
     ? createWebHashHistory(process.env.BASE_URL)
+    : isExtension ?
+      createWebHashHistory(location.href)
     : createWebHistory(process.env.BASE_URL)
 
 const router = createRouter({
