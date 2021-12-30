@@ -24,6 +24,7 @@
             class="el-upload__btn"
             size="small"
             type="success"
+            :loading="uploading"
             @click="submitUpload"
             >Send</el-button
           >
@@ -51,7 +52,7 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, onMounted, watchEffect } from "vue";
+import { defineComponent, reactive, toRefs, onMounted, watchEffect, ref } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { CosInstance } from "../config";
 import { updateHistory, historyRecord, bridge } from "../store";
@@ -173,8 +174,10 @@ export default defineComponent({
       return Promise.resolve(null);
     }
 
+    const uploading = ref(false);
     /** 点击发送按钮 */
     function submitUpload() {
+      uploading.value = true
       const promiseQue = data.fileList.map(file => putObject(file.raw))
       Promise.all(promiseQue).then(res => {
         sendMessage(res);
@@ -182,6 +185,8 @@ export default defineComponent({
         historyRecord.value = res.concat(history);
         updateHistory.value = true;
         data.fileList = [];
+      }).finally(() => {
+        uploading.value = false
       })
     }
 
@@ -204,6 +209,7 @@ export default defineComponent({
 
     return {
       ...toRefs(data),
+      uploading,
       submitUpload,
       removeFileChange,
       uploadFileChange,
