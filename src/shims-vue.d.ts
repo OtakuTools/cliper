@@ -1,4 +1,6 @@
 /* eslint-disable */
+import chrome from '@types/chrome'
+
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
   const component: DefineComponent<{}, {}, any>
@@ -6,5 +8,6 @@ declare module '*.vue' {
 }
 
 interface Window {
-  COS: any
+  COS: any,
+  chrome: chrome
 }

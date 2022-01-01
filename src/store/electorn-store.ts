@@ -5,7 +5,7 @@
 import { ref, reactive, watch, computed } from "vue";
 import { SocketMessage } from '../socket'
 import { bridge } from "./bridge";
-import { USER_SETTING_KEY, UPDATE_HISTORY_KEY, HISTORY_RECORD_KEY, isElectron, EVENT, FEATURE_FLAGS } from '../constant'
+import { USER_SETTING_KEY, UPDATE_HISTORY_KEY, HISTORY_RECORD_KEY, isElectron, EVENT, FEATURE_FLAGS, isExtension } from '../constant'
 
 class LocalStore<T extends Record<string, unknown> = Record<string, unknown>> {
   get<Key extends keyof T>(key: Key, defaultValue: T[Key]): T[Key] {
@@ -78,14 +78,25 @@ export function formatChannelId(roomInfo: RoomInfo): string {
 export const settingChannel = computed(() => formatChannelId(userSetting));
 // 初始化用户设定
 (function initDefaultSetting() {
+  const randomString = (bit: number) => Math.floor(Math.random() * Math.pow(10, bit)).toString().padStart(bit, '0');
   if (FEATURE_FLAGS.INIT_DEFAULT_SETTING && isElectron && !userSetting.roomId) {
     bridge.on(EVENT.GET_SYSTEM_NAME, (evt, name: string) => {
       userSetting.roomId = name
     })
     bridge.send(EVENT.GET_SYSTEM_NAME)
+  } else if (isExtension) { // FIXME: extension模式下若字段为空将无法修改, why???
+    if (!userSetting.roomId) {
+      userSetting.roomId = randomString(4);
+    }
+    if (!userSetting.roomPsw) {
+      userSetting.roomPsw = randomString(4);
+    }
+    if (!userSetting.downloadPath) {
+      userSetting.downloadPath = '/'
+    }
   }
   if (FEATURE_FLAGS.INIT_DEFAULT_SETTING && !userSetting.roomPsw) {
-    const randomPsw = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const randomPsw = randomString(4);
     userSetting.roomPsw = randomPsw;
   }
 })();

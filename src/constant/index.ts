@@ -5,8 +5,14 @@
 /** 是否在electron环境 */
 export const isElectron = !!process.env.IS_ELECTRON;
 
+/** 是否在extension环境 */
+export const isExtension = !!process.env.IS_EXTENSION;
+
 /** 是否在一般浏览器环境 */
 export const isBrowser = !!(!isElectron && typeof window !== 'undefined');
+
+/** 是否是开发环境 */
+export const isDevelopment = process.env.NODE_ENV === 'development';
 
 /** 用户设定库 */
 export const USER_SETTING_KEY = 'userSetting';
