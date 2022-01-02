@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, globalShortcut, clipboard, Tray, Menu, ipcMain, dialog, session } from "electron";
+import { app, protocol, BrowserWindow, globalShortcut, clipboard, Tray, Menu, ipcMain, dialog, session, Notification } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
@@ -81,6 +81,29 @@ async function createWindow() {
     ipcMain.on(EVENT.GET_SYSTEM_NAME, (evt) => {
       evt.sender.send(EVENT.GET_SYSTEM_NAME, process.env.USERNAME || process.env.COMPUTERNAME);
     });
+  }
+
+  // 监听渲染进程请求通知
+  if (FEATURE_FLAGS.NOTIFICATION && Notification.isSupported()) {
+    ipcMain.on(EVENT.SEND_NOTIFICATION, (evt, payload = {}) => {
+      const { title, content, icon, id } = payload;
+
+      if (title) {
+        const notification = new Notification({ title, icon, body: content });
+        notification.show();
+        // 点击事件回传
+        notification.on('click', () => {
+          evt.sender.send(EVENT.CLOSE_NOTIFICATION, id);
+        });
+        // 关闭通知
+        ipcMain.on(EVENT.CLOSE_NOTIFICATION, (e, closeId) => {
+          if (closeId === id) {
+            notification.close();
+          }
+        });
+      }
+      
+    })
   }
 
   win.webContents.on('dom-ready', function(){
