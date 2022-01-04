@@ -1,4 +1,5 @@
-import { isElectron, EventName } from '../constant'
+import { isElectron, EventName, EVENT } from '../constant';
+import axios from 'axios';
 
 /** bus事件回调 */
 type EventCallback = (event: unknown, ...arg: any[]) => void;
@@ -38,13 +39,45 @@ class Bus {
   }
 }
 
+// 纯js下载文件
+function downloadFile(file: any): Promise<void> {
+  return axios({
+    url: file.downloadUrl,
+    method: 'get',
+    responseType: 'blob'
+  }).then((res) => {
+    const link = document.createElement('a');
+    const blob: Blob = res.data;
+    link.setAttribute('href', window.URL.createObjectURL(blob));
+    link.setAttribute('download', file.name);
+    link.click();
+  })
+}
+
+// web端bridge实现
+function initLocalBridge(bridge: Bus): Bus {
+  // download事件
+  bridge.on(EVENT.DOWNLOAD, (evt, payload) => {
+    try {
+      const file = JSON.parse(payload);
+      downloadFile(file);
+    } catch (err) {
+      console.error('下载文件失败', err);
+    }
+  })
+
+  return bridge;
+}
+
 function getBridge() {
   if (isElectron) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { ipcRenderer } = require('electron');
     return ipcRenderer;
   } else {
-    return new Bus();
+    const bridge = new Bus();
+    initLocalBridge(bridge);
+    return bridge;
   }
 }
 
