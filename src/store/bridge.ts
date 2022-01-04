@@ -1,4 +1,4 @@
-import { isElectron, EventName, EVENT } from '../constant';
+import { isElectron, EventName, EVENT, isExtension } from '../constant';
 import axios from 'axios';
 
 /** bus事件回调 */
@@ -69,12 +69,41 @@ function initLocalBridge(bridge: Bus): Bus {
   return bridge;
 }
 
+// extension bridge
+function initExtensionBridge(bridge: Bus): Bus {
+  // download事件
+  bridge.on(EVENT.DOWNLOAD, (evt, payload) => {
+    try {
+      const file = JSON.parse(payload);
+      if (window?.chrome?.downloads) {
+        // use extension downloads API
+        window.chrome.downloads.download({
+          filename: file.name as string,
+          url: file.downloadUrl,
+          conflictAction: 'prompt', // 文件重名的策略 // prompt 提示用户选择, uniquify 自动重命名, overwrite 覆盖
+        })
+      } else {
+        // no access to extension downloads API, fallback to HTLM5 download
+        downloadFile(file)
+      }
+    } catch (err) {
+      console.error('下载文件失败', err);
+    }
+  })
+
+  return bridge;
+}
+
 function getBridge() {
   if (isElectron) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { ipcRenderer } = require('electron');
     return ipcRenderer;
-  } else {
+  } else if (isExtension) { 
+    const bridge = new Bus();
+    initExtensionBridge(bridge);
+    return bridge;
+   } else {
     const bridge = new Bus();
     initLocalBridge(bridge);
     return bridge;
