@@ -32,13 +32,19 @@ export enum EVENT {
   INPUT_DOWNLOAD_PATH = 'INPUT_DOWNLOAD_PATH',
   /** 获取用户名 */
   GET_SYSTEM_NAME = 'GET_SYSTEM_NAME',
+  /** 发送系统通知 */
+  SEND_NOTIFICATION = 'SEND_NOTIFICATION',
+  /** 关闭系统通知 */
+  CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION',
 }
 
 export type EventName = EVENT;
 
 type FeatureName =
+  | 'NOTIFICATION'
   | 'INIT_DEFAULT_SETTING';
 /** feature flags */
 export const FEATURE_FLAGS: Record<FeatureName, boolean> = {
-  INIT_DEFAULT_SETTING: true
+  INIT_DEFAULT_SETTING: true,
+  NOTIFICATION: true,
 };
