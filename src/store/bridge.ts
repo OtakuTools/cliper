@@ -6,7 +6,7 @@ type EventCallback = (event: unknown, ...arg: any[]) => void;
 
 /** bus的简单实现 */
 class Bus {
-  handlers: { [event in EventName]?: EventCallback[] } = {};
+  protected handlers: { [event in EventName]?: EventCallback[] } = {};
 
   /** 监听消息 */
   on(event: EventName, callback: EventCallback) {
@@ -30,12 +30,17 @@ class Bus {
       this.handlers[event] = [];
     }
   }
-
-  /** 发送消息 */
-  send(event: EventName, ...payload: any[]) {
+  
+  /** 触发事件 */
+  protected trigger(event: EventName, payload: any[]) {
     this.handlers[event]?.forEach(callback => {
       callback(event, ...payload);
     })
+  }
+
+  /** 发送消息 */
+  send(event: EventName, ...payload: any[]) {
+    this.trigger(event, payload);
   }
 }
 
