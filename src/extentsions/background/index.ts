@@ -1,5 +1,6 @@
 import bridge from './bridge';
-import { EVENT } from '@/constant';
+import useContextMenu from './contextMenus';
+import { EVENT, FEATURE_FLAGS } from '@/constant';
 
 // download事件
 bridge.on(EVENT.DOWNLOAD, (evt, payload) => {
@@ -20,3 +21,7 @@ bridge.on(EVENT.DOWNLOAD, (evt, payload) => {
     console.error('下载文件失败', err);
   }
 })
+
+if (FEATURE_FLAGS.EXTENSION_CONTEXTMENU) {
+  useContextMenu()
+}

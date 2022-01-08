@@ -24,6 +24,7 @@ export const UPDATE_HISTORY_KEY = 'updateHistoy';
 export const HISTORY_RECORD_KEY = 'historyRecord';
 
 export enum EVENT {
+  SEND_MESSAGE = 'SEND_MESSAGE',
   CALL_RESEND = 'CALL_RESEND',
   RESEND = 'RESEND',
   DOWNLOAD = 'DOWNLOAD',
@@ -41,10 +42,12 @@ export enum EVENT {
 export type EventName = EVENT;
 
 type FeatureName =
+  | 'EXTENSION_CONTEXTMENU'
   | 'NOTIFICATION'
   | 'INIT_DEFAULT_SETTING';
 /** feature flags */
 export const FEATURE_FLAGS: Record<FeatureName, boolean> = {
   INIT_DEFAULT_SETTING: true,
   NOTIFICATION: true,
+  EXTENSION_CONTEXTMENU: false
 };
