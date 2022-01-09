@@ -202,6 +202,13 @@ export default defineComponent({
       addToFileList(file);
     }
 
+    // 用于支持其他端发送消息
+    bridge.on(EVENT.SEND_MESSAGE, (evt: unknown, args: string) => {
+      const data = JSON.parse(args);
+      sendMessage(data);
+    })
+
+    // TODO: 考虑到resend发起者是histroy页, 以后会换成bus
     bridge.on(EVENT.CALL_RESEND, (evt: unknown, args: string) => {
       const data = JSON.parse(args);
       sendMessage(data);
