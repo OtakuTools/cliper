@@ -140,7 +140,6 @@ async function createWindow() {
     ipcMain.on(EVENT.RESEND, async (evt, args) => {
       win.webContents.send(EVENT.CALL_RESEND, args);
     })
-    
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

@@ -3,9 +3,7 @@ import COS from 'cos-js-sdk-v5';
 
 /** ws配置 */
 export const Config = {
-  wsServerURL: "wss://iclass-saas.api.qcloud.com/connection/websocket",
-  wsChannel: "public:news",
-  wsToken: "553b9d161be673699d90e8059944489c",
+  wsServerURL: "ws://service-7xa83x7r-1259648581.sh.apigw.tencentcs.com:80/websocket",
 
   sendPassword: "",
   receivePassword: "",
