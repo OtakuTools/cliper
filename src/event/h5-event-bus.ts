@@ -42,13 +42,13 @@ export class H5EventBus extends EventBus {
     }
   }
 
-  emit(eventName: string, ...data: any) {
+  emit(eventName: string, ...payload: any) {
     if (eventName) {
       const eventQueue: Array<EventCallback> = this.eventListenersMap.get(eventName) || [];
       let l = eventQueue.length;
       while (l--) {
         try {
-          eventQueue[l].apply(this, [ ...data ]);
+          eventQueue[l].apply(this, [ ...payload ]);
         } catch(e) {
           console.error('event fire exception:', e);
         }

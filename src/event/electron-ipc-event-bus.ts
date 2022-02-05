@@ -2,7 +2,6 @@ import { EventBus, EventCallback } from "@/event/event-bus";
 
 export class ElectronIpcEventBus extends EventBus {
   ipcMain: any
-  ipcRender: any
   constructor(ipcMain: any) {
     super();
     this.ipcMain = ipcMain;
@@ -16,7 +15,7 @@ export class ElectronIpcEventBus extends EventBus {
     this.ipcMain.off(eventName, callback);
   }
 
-  emit(eventName: string, ...data: any) {
-    this.ipcMain.emit(eventName, data);
+  emit(eventName: string, ...payload: any) {
+    this.ipcMain.emit(eventName, payload);
   }
 }
