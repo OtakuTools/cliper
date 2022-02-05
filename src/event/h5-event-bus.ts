@@ -1,13 +1,11 @@
-import { EventBus } from "@/event/event-bus";
-
-type CallbackFunction = (...args: any) => void;
+import { EventBus, EventCallback } from "@/event/event-bus";
 
 export class H5EventBus extends EventBus {
-  private eventListenersMap: Map<string, CallbackFunction[]>;
+  private eventListenersMap: Map<string, EventCallback[]>;
 
   constructor() {
     super();
-    this.eventListenersMap = new Map<string, CallbackFunction[]>();
+    this.eventListenersMap = new Map<string, EventCallback[]>();
   }
 
   /**
@@ -15,8 +13,8 @@ export class H5EventBus extends EventBus {
    * @param eventName
    * @param fn
    */
-  on(eventName: string, fn: CallbackFunction) {
-    const eventQueue: Array<CallbackFunction> = this.eventListenersMap.get(eventName) || [];
+  on(eventName: string, fn: EventCallback) {
+    const eventQueue: Array<EventCallback> = this.eventListenersMap.get(eventName) || [];
     eventQueue.push(fn);
     if (eventQueue.length === 1) {
       this.eventListenersMap.set(eventName, eventQueue);
@@ -28,11 +26,11 @@ export class H5EventBus extends EventBus {
    * @param eventName 事件名
    * @param fn 回调方法
    */
-  off(eventName: string, fn?: CallbackFunction) {
+  off(eventName: string, fn?: EventCallback) {
     // 如果有eventName
     if (eventName) {
       if (fn) {
-        const eventQueue: Array<CallbackFunction> = this.eventListenersMap.get(eventName) || [];
+        const eventQueue: Array<EventCallback> = this.eventListenersMap.get(eventName) || [];
         const index = eventQueue.findIndex((element) => element === fn);
         eventQueue.splice(index, 1);
       } else {
@@ -45,16 +43,16 @@ export class H5EventBus extends EventBus {
   }
 
   emit(eventName: string, ...data: any) {
-    try {
-      if (eventName) {
-        const eventQueue: Array<CallbackFunction> = this.eventListenersMap.get(eventName) || [];
-        let l = eventQueue.length;
-        while (l--) {
+    if (eventName) {
+      const eventQueue: Array<EventCallback> = this.eventListenersMap.get(eventName) || [];
+      let l = eventQueue.length;
+      while (l--) {
+        try {
           eventQueue[l].apply(this, [ ...data ]);
+        } catch(e) {
+          console.error('event fire exception:', e);
         }
       }
-    } catch (e) {
-      console.error('event fire exception:', e);
     }
   }
 }
