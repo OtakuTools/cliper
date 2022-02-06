@@ -59,6 +59,7 @@ import { updateHistory, historyRecord } from "../store";
 import { bridge } from '../event';
 import Socket, { SocketMessage } from '../socket';
 import { EVENT } from "@/constant";
+import { SocketEvent } from '../socket/socket-manager';
 
 export default defineComponent({
   name: "UploadComponent",
@@ -74,7 +75,7 @@ export default defineComponent({
   setup(props) {
     const data = reactive({
       fileList: [] as any[],
-      ws: null as any as Socket
+      wsChannelId: ''
     });
 
 
@@ -91,7 +92,9 @@ export default defineComponent({
 
     watchEffect(() => {
       const cid = props.channelId;
-      data.ws = new Socket(cid, (data) => { console.log(data) });
+      data.wsChannelId = cid;
+      // data.ws = new Socket(cid, (data) => { console.log(data) });
+      bridge.emit(SocketEvent.CREATE_INSTANCE, cid);
     })
 
     onMounted(() => {
@@ -171,7 +174,8 @@ export default defineComponent({
     /** @function 通过ws同步消息 */
     function sendMessage(message: SocketMessage[]): Promise<unknown> {
       console.log(message);
-      data.ws.socketSend(message);
+      // data.ws.socketSend(message);
+      bridge.emit(SocketEvent.SEND_MSG, data.wsChannelId, message);
       return Promise.resolve(null);
     }
 

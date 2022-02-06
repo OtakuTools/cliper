@@ -5,7 +5,8 @@ export enum SocketEvent {
   SEND_MSG = 'send_msg',
   RESEND_MSG = 'resend_msg',
   RECV_MSG = 'recv_msg',
-  CREATE_INSTANCE = 'create_instance'
+  CREATE_INSTANCE = 'create_instance',
+  DELETE_INSTANCE = 'delete_instance'
 }
 
 export class SocketManager {
@@ -18,11 +19,13 @@ export class SocketManager {
   }
 
   createInstance(channelId: string) {
-    const instance = new SocketInstance(channelId, (data) => {
-      //  接收信令
-      this.recvMessage(channelId, data);
-    })
-    this.socketInstanceMap.set(channelId, instance)
+    if (!this.socketInstanceMap.has(channelId)) {
+      const instance = new SocketInstance(channelId, (data) => {
+        //  接收信令
+        this.recvMessage(channelId, data);
+      })
+      this.socketInstanceMap.set(channelId, instance)
+    }
   }
 
   deleteInstance(channelId: string) {

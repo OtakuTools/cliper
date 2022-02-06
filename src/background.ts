@@ -9,6 +9,7 @@ import fs from 'fs';
 import axios from "axios";
 import { FEATURE_FLAGS, EVENT, HISTORY_RECORD_KEY, UPDATE_HISTORY_KEY } from './constant'
 import { bridge } from './event';
+import { SocketEvent } from "./socket/socket-manager";
 
 // 初始化，否则渲染进程会卡死
 Store.initRenderer();
@@ -141,6 +142,20 @@ async function createWindow() {
     bridge.on(EVENT.RESEND, async (evt, args) => {
       win.webContents.send(EVENT.CALL_RESEND, args);
     })
+
+    bridge.on(SocketEvent.CREATE_INSTANCE, (evt, args) => {
+      win.webContents.send(SocketEvent.CREATE_INSTANCE, args)
+    });
+
+    bridge.on(SocketEvent.SEND_MSG, (evt, args) => {
+      console.log('background SocketEvent.SEND_MSG')
+      win.webContents.send(SocketEvent.SEND_MSG, args)
+    });
+
+    bridge.on(SocketEvent.RECV_MSG, (evt, args) => {
+      console.log("background SocketEvent.RECV_MSG", args);
+      win.webContents.send(SocketEvent.RECV_MSG, args)
+    });
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

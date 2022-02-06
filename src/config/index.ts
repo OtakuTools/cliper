@@ -3,7 +3,9 @@ import COS from 'cos-js-sdk-v5';
 
 /** ws配置 */
 export const Config = {
-  wsServerURL: "ws://service-7xa83x7r-1259648581.sh.apigw.tencentcs.com:80/websocket",
+  // wsServerURL: "ws://service-7xa83x7r-1259648581.sh.apigw.tencentcs.com:80/websocket",
+  wsServerURL: "ws://service-g88d6nn1-1252809026.sh.apigw.tencentcs.com:80/websocket",
+
 
   sendPassword: "",
   receivePassword: "",

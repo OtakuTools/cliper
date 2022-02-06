@@ -30,6 +30,7 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import Socket, { SocketMessage } from "../socket";
+import { SocketEvent } from '../socket/socket-manager';
 import { settingChannel, formatChannelId } from '../store';
 import { bridge } from '../event';
 import { EVENT, FEATURE_FLAGS } from '../constant';
@@ -47,7 +48,7 @@ export default defineComponent({
   setup() {
     const data = reactive({
       channelIdList: [] as string[],
-      channelWsList: new Map<string, Socket>(),
+      // channelWsList: new Map<string, Socket>(),
       recvDataList: new Map<string, SocketMessage[]>(),
       currentChannel: '',
       dialogFormVisible: false,
@@ -57,17 +58,15 @@ export default defineComponent({
       }
     });
 
-    function addChannel(channelId: string) {
-      if (data.channelIdList.includes(channelId)) {
-        return;
-      }
-      data.recvDataList.set(channelId, [])
-      const ws = new Socket(channelId, (msg: SocketMessage[]) => {
+    bridge.on(SocketEvent.RECV_MSG, (evt, payload: [string, SocketMessage[]]) => {
+      const [channelId, msg] = payload;
+      console.log('SocketEvent.RECV_MSG', channelId, msg)
+      if (msg && msg.length) {
         const target = data.recvDataList.get(channelId) || [];
         target.push(...msg);
 
         // 消息推送
-        if(FEATURE_FLAGS.NOTIFICATION){
+        if (FEATURE_FLAGS.NOTIFICATION) {
           msg.filter(file => file.type === 'url').forEach(file => {
             Notify.info('收到文件, 点击下载', {
               content: file.name,
@@ -78,8 +77,34 @@ export default defineComponent({
             })
           })
         }
-      })
-      data.channelWsList.set(channelId, ws);
+      }
+    })
+
+    function addChannel(channelId: string) {
+      if (data.channelIdList.includes(channelId)) {
+        return;
+      }
+      data.recvDataList.set(channelId, [])
+      // const ws = new Socket(channelId, (msg: SocketMessage[]) => {
+      //   const target = data.recvDataList.get(channelId) || [];
+      //   target.push(...msg);
+
+      //   // 消息推送
+      //   if(FEATURE_FLAGS.NOTIFICATION){
+      //     msg.filter(file => file.type === 'url').forEach(file => {
+      //       Notify.info('收到文件, 点击下载', {
+      //         content: file.name,
+      //         click: () => bridge.emit(EVENT.DOWNLOAD, JSON.stringify({
+      //           downloadUrl: file.data,
+      //           name: file.name
+      //         }))
+      //       })
+      //     })
+      //   }
+      // })
+      // data.channelWsList.set(channelId, ws);
+
+      bridge.emit(SocketEvent.CREATE_INSTANCE, channelId);
       data.channelIdList.push(channelId);
       data.currentChannel = channelId;
     }
@@ -98,9 +123,11 @@ export default defineComponent({
         return;
       }
       data.recvDataList.delete(channelId)
-      const ws = data.channelWsList.get(channelId);
-      ws?.close();
-      data.channelWsList.delete(channelId);
+      // const ws = data.channelWsList.get(channelId);
+      // ws?.close();
+      // data.channelWsList.delete(channelId);
+      bridge.emit(SocketEvent.DELETE_INSTANCE, channelId)
+
       if (channelId === data.currentChannel) {
         const index = data.channelIdList.findIndex(id => id === channelId);
         data.currentChannel = data.channelIdList[index - 1] || data.channelIdList[index + 1] || '';

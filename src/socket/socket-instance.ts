@@ -1,5 +1,4 @@
 import { Config } from "@/config";
-import { isOnline } from "../store";
 
 export interface SocketMessage {
   name: string
@@ -52,7 +51,6 @@ export class SocketInstance {
 
   setOffline(): void {
     this.alive = false;
-    isOnline.value = false;
   }
 
   keepAlive(): void {
