@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import { defineComponent, onActivated, reactive, toRefs } from "vue";
-import { bridge } from '../store';
+import { bridge } from '../event';
 import dayjs from 'dayjs';
 import { useRoute } from "vue-router";
 import { historyRecord, updateHistory } from '../store'
@@ -83,7 +83,7 @@ export default defineComponent({
     })
     
     const resend = (msg: typeof historyRecord.value[0]) => {
-      bridge.send(EVENT.RESEND, JSON.stringify([msg]));
+      bridge.emit(EVENT.RESEND, JSON.stringify([msg]));
     }
 
     const formatDate = (timestamp: number) => {

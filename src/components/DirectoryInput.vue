@@ -5,7 +5,7 @@
 <script lang="ts">
 import { EVENT, isBrowser, isElectron } from '@/constant'
 import { defineComponent, toRefs } from 'vue'
-import { bridge } from '../store'
+import { bridge } from '../event'
 
 export default defineComponent({
   name: 'DirectoryInput',
@@ -35,7 +35,7 @@ export default defineComponent({
         bridge.on(EVENT.INPUT_DOWNLOAD_PATH, (evt: unknown, files: string[]) => {
           setValue(files[0] || '')
         });
-        bridge.send(EVENT.INPUT_DOWNLOAD_PATH, { defaultPath: valueRef.value || 'C:\\' });
+        bridge.emit(EVENT.INPUT_DOWNLOAD_PATH, { defaultPath: valueRef.value || 'C:\\' });
         return true
       }
     }

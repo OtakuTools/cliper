@@ -30,7 +30,8 @@
 import { defineComponent, reactive, toRefs, } from "vue";
 import RecvListComponent from "./RecvListComponent.vue";
 import Socket, { SocketMessage } from "../socket";
-import { settingChannel, formatChannelId, bridge } from '../store';
+import { settingChannel, formatChannelId } from '../store';
+import { bridge } from '../event';
 import { EVENT, FEATURE_FLAGS } from '../constant';
 import Notify from '../notification';
 
@@ -70,7 +71,7 @@ export default defineComponent({
           msg.filter(file => file.type === 'url').forEach(file => {
             Notify.info('收到文件, 点击下载', {
               content: file.name,
-              click: () => bridge.send(EVENT.DOWNLOAD, JSON.stringify({
+              click: () => bridge.emit(EVENT.DOWNLOAD, JSON.stringify({
                 downloadUrl: file.data,
                 name: file.name
               }))

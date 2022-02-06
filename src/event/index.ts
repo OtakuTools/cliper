@@ -4,6 +4,7 @@ import { H5EventBus } from './h5-event-bus';
 import { ExtenesionEventBus } from './extension-event-bus';
 
 export const createEventBus = () => {
+  console.log('isElectronBackground',isElectronBackground,'isElectron',isElectron)
   if (isElectronBackground) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { ipcMain } = require('electron');
@@ -19,3 +20,4 @@ export const createEventBus = () => {
   }
 }
 
+export const bridge = createEventBus();

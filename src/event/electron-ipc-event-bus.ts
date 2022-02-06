@@ -17,6 +17,6 @@ export class ElectronIpcEventBus extends EventBus {
   }
 
   emit(eventName: string, ...payload: any) {
-    this.ipc.emit(eventName, payload);
+    this.ipc.send(eventName, payload);
   }
 }

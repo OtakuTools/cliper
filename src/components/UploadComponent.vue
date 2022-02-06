@@ -55,7 +55,8 @@
 import { defineComponent, reactive, toRefs, onMounted, watchEffect, ref } from "vue";
 import { UploadFilled } from '@element-plus/icons-vue';
 import { CosInstance } from "../config";
-import { updateHistory, historyRecord, bridge } from "../store";
+import { updateHistory, historyRecord } from "../store";
+import { bridge } from '../event';
 import Socket, { SocketMessage } from '../socket';
 import { EVENT } from "@/constant";
 
