@@ -5,6 +5,9 @@
 /** 是否在electron环境 */
 export const isElectron = !!process.env.IS_ELECTRON;
 
+/** 是否在electron环境且在后台运行 */
+export const isElectronBackground = !!(process.env.IS_ELECTRON && typeof window === 'undefined') ;
+
 /** 是否在extension环境 */
 export const isExtension = !!process.env.IS_EXTENSION;
 
