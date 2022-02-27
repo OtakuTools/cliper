@@ -29,6 +29,16 @@ const electronConfig = {
           createStartMenuShortcut: true,
           shortcutName: 'clip',
         },
+        mac: {
+          target: [
+            {
+              target: 'pkg'
+            }
+          ]
+        },
+        pkg: {
+          
+        }
       },
     }
   },
