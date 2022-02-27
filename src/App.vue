@@ -6,20 +6,6 @@
     @select="handleSelect"
     :ellipsis="false"
   >
-    <el-menu-item index="SendPage" style="height: 40px; width: 25%">
-      <svg
-        class="icon"
-        width="24"
-        height="24"
-        viewBox="0 0 1024 1024"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill="currentColor"
-          d="M160 832h704a32 32 0 110 64H160a32 32 0 110-64zm384-578.304V704h-64V247.296L237.248 490.048 192 444.8 508.8 128l316.8 316.8-45.312 45.248L544 253.696z"
-        ></path>
-      </svg>
-    </el-menu-item>
     <el-menu-item index="RecvPage" style="height: 40px; width: 25%">
       <svg
         class="icon"
@@ -31,6 +17,20 @@
         <path
           fill="currentColor"
           d="M160 832h704a32 32 0 110 64H160a32 32 0 110-64zm384-253.696l236.288-236.352 45.248 45.248L508.8 704 192 387.2l45.248-45.248L480 584.704V128h64v450.304z"
+        ></path>
+      </svg>
+    </el-menu-item>
+    <el-menu-item index="SendPage" style="height: 40px; width: 25%">
+      <svg
+        class="icon"
+        width="24"
+        height="24"
+        viewBox="0 0 1024 1024"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="currentColor"
+          d="M160 832h704a32 32 0 110 64H160a32 32 0 110-64zm384-578.304V704h-64V247.296L237.248 490.048 192 444.8 508.8 128l316.8 316.8-45.312 45.248L544 253.696z"
         ></path>
       </svg>
     </el-menu-item>
